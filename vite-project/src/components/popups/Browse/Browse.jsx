@@ -32,12 +32,12 @@ const BrowsePopup = () => {
                         </div>
                     </div>
                     <div className="pop-browse__wrap">
-                        <form className="pop-browse__form form-browse" id="formBrowseCard" action="#">
-                            <div className="form-browse__block">
-                                <label for="textArea01" className="subttl">Описание задачи</label>
-                                <textarea className="form-browse__area" name="text" id="textArea01" readonly placeholder="Введите описание задачи..."></textarea>
+                        <htmlform className="pop-browse__htmlform htmlform-browse" id="htmlformBrowseCard" action="#">
+                            <div className="htmlform-browse__block">
+                                <label htmlFor="textArea01" className="subttl">Описание задачи</label>
+                                <textarea className="htmlform-browse__area" name="text" id="textArea01" readOnly placeholder="Введите описание задачи..."></textarea>
                             </div>
-                        </form>
+                        </htmlform>
                         <div className="pop-new-card__calendar calendar">
                             <p className="calendar__ttl subttl">Даты</p>
                             <Calendar />

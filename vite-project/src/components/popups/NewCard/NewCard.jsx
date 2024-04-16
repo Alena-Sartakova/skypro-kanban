@@ -8,16 +8,16 @@ const NewCardPopup = () => {
                     <h3 className="pop-new-card__ttl">Создание задачи</h3>
                     <a href="#" className="pop-new-card__close">&#10006;</a>
                     <div className="pop-new-card__wrap">
-                        <form className="pop-new-card__form form-new" id="formNewCard" action="#">
-                            <div className="form-new__block">
-                                <label for="formTitle" className="subttl">Название задачи</label>
-                                <input className="form-new__input" type="text" name="name" id="formTitle" placeholder="Введите название задачи..." autofocus />
+                        <htmlform className="pop-new-card__htmlform htmlform-new" id="htmlformNewCard" action="#">
+                            <div className="htmlform-new__block">
+                                <label htmlFor="htmlformTitle" className="subttl">Название задачи</label>
+                                <input className="htmlform-new__input" type="text" name="name" id="htmlformTitle" placeholder="Введите название задачи..." autoFocus />
                             </div>
-                            <div className="form-new__block">
-                                <label for="textArea" className="subttl">Описание задачи</label>
-                                <textarea className="form-new__area" name="text" id="textArea" placeholder="Введите описание задачи..."></textarea>
+                            <div className="htmlform-new__block">
+                                <label htmlFor="textArea" className="subttl">Описание задачи</label>
+                                <textarea className="htmlform-new__area" name="text" id="textArea" placeholder="Введите описание задачи..."></textarea>
                             </div>
-                        </form>
+                        </htmlform>
                         <div className="pop-new-card__calendar calendar">
                             <p className="calendar__ttl subttl">Даты</p>
                             <Calendar />
@@ -37,7 +37,7 @@ const NewCardPopup = () => {
                             </div>
                         </div>
                     </div>
-                    <button className="form-new__create _hover01" id="btnCreate">Создать задачу</button>
+                    <button className="htmlform-new__create _hover01" id="btnCreate">Создать задачу</button>
                 </div>
             </div>
         </div>
