@@ -1,4 +1,5 @@
 import Card from "../Card/Card";
+import { cardList } from "../data";
 
 const Column = ({ title }) => {
     return (<div className="main__column">
@@ -6,26 +7,14 @@ const Column = ({ title }) => {
             <p>{title}</p>
         </div>
         <div className="cards">
-            <Card
-                category="Web Design"
-                title="Название карточки"
-                date="30/10/23" />
-            <Card
-                category="Ressearch"
-                title="Название карточки"
-                date="30/10/23" />
-            <Card
-                category="Web Design"
-                title="Название карточки"
-                date="30/10/23" />
-            <Card
-                category="Copywriting"
-                title="Название карточки"
-                date="30/10/23" />
-            <Card
-                category="Research"
-                title="Название карточки"
-                date="30/10/23" />
+            {cardList.map((card) => (
+                <Card
+                    name={card.title}
+                    theme={card.theme}
+                    date={card.date}
+                    key={card.id}
+                />
+            ))}
         </div>
     </div>);
 }
