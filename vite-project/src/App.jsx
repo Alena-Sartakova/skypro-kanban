@@ -1,25 +1,40 @@
 
+import { useEffect, useState } from 'react';
 import './App.css'
 import Header from './components/Header/Header';
 import Main from './components/Main/Main';
-import BrowsePopup from './components/popups/Browse/Browse';
-import ExitPopup from './components/popups/Exit/Exit';
-import NewCardPopup from './components/popups/NewCard/NewCard';
+
+import { cardList } from './components/data';
 
 function App() {
+	const [cards, setCards] = useState(cardList);
+	const [isLoaded, setIsLoaded] = useState(true);
 
+	useEffect(() => {
+		setTimeout(() => {
+			setIsLoaded(false);
+		}, 2000);
+	}, []);
+
+	function addCard() {
+		setCards([
+			...cards,
+			{
+				id: cards.length + 1,
+				theme: "Research",
+				title: "Нужно сделать",
+				date: "30.11.23",
+				status: "Без статуса",
+			},
+		]);
+	}
 
 	return (
 		<div className="wrapper">
-			<ExitPopup />
 
-			<NewCardPopup />
+			<Header addCard={addCard} />
 
-			<BrowsePopup />
-
-			<Header />
-
-			<Main />
+			<Main cardList={cards} isLoaded={isLoaded} />
 
 		</div>
 	);

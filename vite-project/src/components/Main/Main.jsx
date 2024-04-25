@@ -1,23 +1,23 @@
 import Column from "../Column/Column";
+import { cardList, statusList } from "../data";
 
-const Main = () => {
-    return (<main className="main">
-        <div className="container">
-
-            <div className="main__block">
-                <div className="main__content">
-                    <Column title="Без статуса" />
-                    <Column title="Нужно сделать" />
-                    <Column title="В работе" />
-                    <Column title="Тестирование" />
-                    <Column title="Готово" />
-                    
-
+function Main({ cardList, isLoaded }) {
+    return (
+        <main className="main">
+            <div className="container">
+                <div className="main__block">
+                    <div className="main__content">
+                        {isLoaded ? "Загрузка..." : statusList.map((item) => (
+                            <Column
+                                key={item}
+                                title={item}
+                                cardList={cardList.filter((card) => card.status === item)}
+                            />
+                        ))}
+                    </div>
                 </div>
-
             </div>
-        </div>
-    </main>
+        </main>
     );
 }
 
