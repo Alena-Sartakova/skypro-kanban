@@ -1,7 +1,7 @@
 import Column from "../Column/Column";
 import { cardList, statusList } from "../data";
 
-function Main({ isLoaded }) {
+function Main({ cardList, isLoaded }) {
     return (
         <main className="main">
             <div className="container">

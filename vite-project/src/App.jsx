@@ -26,7 +26,7 @@ function App() {
 				theme: "Research",
 				title: "Нужно сделать",
 				date: "30.11.23",
-				status: "Нужно сделать",
+				status: "Без статуса",
 			},
 		]);
 	}

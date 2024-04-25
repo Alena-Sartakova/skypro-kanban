@@ -1,6 +1,6 @@
 import PopUser from "./PopUser";
 
-const Header = () => {
+function Header({ addCard }) {
     return (<header className="header">
         <div className="container">
             <div className="header__block">
@@ -11,7 +11,7 @@ const Header = () => {
                     <a href="" target="_self"><img src="images/logo_dark.png" alt="logo" /></a>
                 </div>
                 <nav className="header__nav">
-                    <button className="header__btn-main-new _hover01" id="btnMainNew"><a href="#popNewCard">Создать новую задачу</a></button>
+                    <button className="header__btn-main-new _hover01" id="btnMainNew"><a href="#popNewCard" onClick={addCard}>Создать новую задачу</a></button>
                     <PopUser />
 
                 </nav>

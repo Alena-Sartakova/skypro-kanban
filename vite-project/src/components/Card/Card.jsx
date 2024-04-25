@@ -8,7 +8,7 @@ const Card = ({ theme, title, date }) => {
         <div className="cards__card card">
             <div className="card__group">
                 <div className={`card__theme ${colours[theme]}`}>
-                    <p className>{theme}</p>
+                    <p>{theme}</p>
                 </div>
                 <a href="#popBrowse" target="_self">
                     <div className="card__btn">
