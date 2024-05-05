@@ -1,23 +1,28 @@
 import PopUser from "./PopUser";
+import * as S from "./Header.styled.js";
 
 function Header({ addCard }) {
-    return (<header className="header">
-        <div className="container">
-            <div className="header__block">
-                <div className="header__logo _show _light">
-                    <a href="" target="_self"><img src="images/logo.png" alt="logo" /></a>
-                </div>
-                <div className="header__logo _dark">
-                    <a href="" target="_self"><img src="images/logo_dark.png" alt="logo" /></a>
-                </div>
-                <nav className="header__nav">
-                    <button className="header__btn-main-new _hover01" id="btnMainNew"><a href="#popNewCard" onClick={addCard}>Создать новую задачу</a></button>
-                    <PopUser />
+    return (
+        <S.Header>
 
-                </nav>
-            </div>
-        </div>
-    </header>);
+            <div className="container">
+                <S.HeaderBlock>
+
+                    <div className="header__logo _show _light">
+                        <a href="" target="_self"><img src="images/logo.png" alt="logo" /></a>
+                    </div>
+                    <div className="header__logo _dark">
+                        <a href="" target="_self"><img src="images/logo_dark.png" alt="logo" /></a>
+                    </div>
+                    <S.HeaderNav>
+
+                        <button className="header__btn-main-new _hover01" id="btnMainNew"><a href="#popNewCard" onClick={addCard}>Создать новую задачу</a></button>
+                        <PopUser />
+                    </S.HeaderNav>
+
+                </S.HeaderBlock>
+            </div></S.Header>
+    );
 }
 
 export default Header;

@@ -1,12 +1,15 @@
 import Column from "../Column/Column";
-import { cardList, statusList } from "../data";
+import { statusList } from "../data";
+import * as S from "./Main.styled.js";
 
 function Main({ cardList, isLoaded }) {
     return (
+
         <main className="main">
             <div className="container">
-                <div className="main__block">
-                    <div className="main__content">
+                <S.MainBlock>
+                    <S.StyledMainContent>
+
                         {isLoaded ? "Загрузка..." : statusList.map((item) => (
                             <Column
                                 key={item}
@@ -14,8 +17,9 @@ function Main({ cardList, isLoaded }) {
                                 cardList={cardList.filter((card) => card.status === item)}
                             />
                         ))}
-                    </div>
-                </div>
+
+                    </S.StyledMainContent>
+                </S.MainBlock>
             </div>
         </main>
     );

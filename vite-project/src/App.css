@@ -828,12 +828,12 @@ body {
   display: block;
   position: relative;
 }
-.cards__item {
+/* .cards__item {
   padding: 5px;
   animation-name: card-animation;
   animation-duration: 500ms;
   animation-timing-function: linear;
-}
+} */
 .cards__card {
   width: 220px;
   height: 130px;
