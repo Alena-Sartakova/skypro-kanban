@@ -1,5 +1,12 @@
 import styled from 'styled-components';
 import { StyledCard } from '../Column/Column.styled';
+import { topicStyles } from '../data';
+
+export const CardName = styled.p`
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 10px;
+`;
 
 export const CardItem = styled.div`
 padding: 5px;
@@ -40,19 +47,22 @@ export const CardGroup = styled.div`
   justify-content: space-between;
 `;
 
-export const CardTheme = styled.div`
+
+export const CardTopic = styled.div`
+  // создаем styled-component для div CardTheme
   width: auto;
   height: 20px;
   padding: 5px 14px;
   border-radius: 18px;
-  
+  background-color: ${({ $themeColor }) =>
+    topicStyles[$themeColor]?.backgroundColor || "#94a6be"};
+
+  ${CardName} {
+    color: ${({ $themeColor }) => topicStyles[$themeColor]?.color || "#ffffff"};
+  }
 `;
 
-export const CardName = styled.p`
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 10px;
-`;
+
 
 export const CardBtn = styled.div`
   width: 24px;
@@ -115,4 +125,8 @@ export const CardDate = styled.div`
     letter-spacing: 0.2px;
   }
 `;
+
+
+
+
 

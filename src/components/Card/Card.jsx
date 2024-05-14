@@ -1,19 +1,16 @@
+import { themeList } from "../data.js";
 import * as S from "./Card.styled.js";
 
 const Card = ({ theme, title, date }) => {
-    const colours = {
-        'Web Design': '_orange',
-        'Copywriting': '_purple',
-        'Research': '_green'
-    }
+
     return (
 
         <S.CardItem>
             <S.CardsCard>
                 <S.CardGroup>
-                    <S.CardTheme $color={colours[theme]}>
+                    <S.CardTopic $themeColor={themeList[theme]}>
                         <S.CardName>{theme}</S.CardName>
-                    </S.CardTheme>
+                    </S.CardTopic>
                     <a href="#popBrowse" target="_self">
                         <S.CardBtn>
                             <S.CardBtnDiv></S.CardBtnDiv>
