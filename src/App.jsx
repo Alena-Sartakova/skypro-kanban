@@ -1,15 +1,16 @@
 
+
 import './App.css'
 import { AppRoutes } from './AppRoutes';
-import { ThemeProvider } from 'styled-components';
+
 
 function App() {
-	
+
 
 	return (
-		<ThemeProvider >
-	  <AppRoutes/>
-		</ThemeProvider>
+		
+			<AppRoutes />
+		
 	)
 }
 

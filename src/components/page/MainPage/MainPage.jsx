@@ -4,6 +4,7 @@ import Main from '../../Main/Main';
 import { Header } from '../../Header/Header.styled';
 import { cardList } from '../../data';
 import { Outlet } from 'react-router-dom';
+import NewCardPopup from '../../popups/NewCard/NewCard';
 
 function MainPage() {
     const [cards, setCards] = useState(cardList);
@@ -30,7 +31,9 @@ function MainPage() {
 
     return (
         <Wrapper>
+
             <Outlet />
+            <NewCardPopup />
             <Header addCard={addCard} />
 
             <Main cardList={cards} isLoaded={isLoaded} />
