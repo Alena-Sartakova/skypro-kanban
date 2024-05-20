@@ -3,8 +3,9 @@ import { Wrapper } from '../LoginPage/LoginPage.styled';
 import Main from '../../Main/Main';
 import  Header  from '../../Header/Header';
 import { cardList } from '../../data';
-import { Outlet } from 'react-router-dom';
+
 import NewCardPopup from '../../popups/NewCard/NewCard';
+import { Outlet } from 'react-router-dom';
 
 function MainPage() {
     const [cards, setCards] = useState(cardList);
