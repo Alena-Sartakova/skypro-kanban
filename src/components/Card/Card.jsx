@@ -23,7 +23,7 @@ function Card ({ theme, title, date, id }) {
                 </S.CardGroup>
 
                 <S.CardContent>
-                    <Link to={`${id}`}>
+                    <Link to={`task/${id}`}>
                         <S.CardTitle>{title}</S.CardTitle>
                     </Link>
                     <S.CardDate>

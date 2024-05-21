@@ -7,6 +7,7 @@ import { cardList } from '../../data';
 import NewCardPopup from '../../popups/NewCard/NewCard';
 import { Outlet } from 'react-router-dom';
 import { Wrapper } from '../LoginPage/LoginPage.styled';
+import BrowsePopup from '../../popups/Browse/Browse';
 
 
 function MainPage() {
