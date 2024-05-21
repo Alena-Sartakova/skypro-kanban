@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import * as S from '../../page/LoginPage/LoginPage.styled.js';
+import * as S from '../../pages/LoginPage/LoginPage.styled.js';
 import { Wrapper } from "./LoginPage.styled.js";
 import { routesPath } from "../routesPath.js";
 

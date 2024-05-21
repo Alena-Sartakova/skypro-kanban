@@ -1,7 +1,8 @@
+import { Link } from "react-router-dom";
 import { themeList } from "../data.js";
 import * as S from "./Card.styled.js";
 
-const Card = ({ theme, title, date }) => {
+function Card ({ theme, title, date, id }) {
 
     return (
 
@@ -11,6 +12,7 @@ const Card = ({ theme, title, date }) => {
                     <S.CardTopic $themeColor={themeList[theme]}>
                         <S.CardName>{theme}</S.CardName>
                     </S.CardTopic>
+
                     <a href="#popBrowse" target="_self">
                         <S.CardBtn>
                             <S.CardBtnDiv></S.CardBtnDiv>
@@ -21,9 +23,9 @@ const Card = ({ theme, title, date }) => {
                 </S.CardGroup>
 
                 <S.CardContent>
-                    <a href="" target="_blank">
+                    <Link to={`${id}`}>
                         <S.CardTitle>{title}</S.CardTitle>
-                    </a>
+                    </Link>
                     <S.CardDate>
 
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13" fill="none">

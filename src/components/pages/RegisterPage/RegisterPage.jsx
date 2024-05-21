@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 
-import * as S from '../../page/RegisterPage/RegisterPage.styled.js';
-
+import * as S from '../../pages/RegisterPage/RegisterPage.styled.js';
 import { Wrapper } from "../LoginPage/LoginPage.styled.js";
 import { routesPath } from "../routesPath.js";
+
+
 
 export const RegisterPage = () => {
     return (

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { routesPath } from "../pages/routesPath";
 
 function PopUser() {
     const [isVisible, setIsVisible] = useState(false);
@@ -18,7 +20,10 @@ function PopUser() {
                         <p>Темная тема</p>
                         <input type="checkbox" className="checkbox" name="checkbox" />
                     </div>
-                    <button type="button" className="_hover03"><a href="#popExit">Выйти</a></button>
+                    <button type="button" className="_hover03">
+                        <Link to={routesPath.EXIT}>
+                            Выйти
+                        </Link></button>
                 </div>
             )
             }

@@ -1,13 +1,13 @@
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { routesPath } from './components/page/routesPath';
+import { routesPath } from './components/pages/routesPath';
 import { PrivateRoute } from './components/PrivateRoute';
-import MainPage from './components/page/MainPage/MainPage';
-import { PopBrowsePage } from './components/page/PopBrowsePage/PopBrowsePage';
-import { ExitPage } from './components/page/ExitPage/ExitPage';
-import { LoginPage } from './components/page/LoginPage/LoginPage';
-import { RegisterPage } from './components/page/RegisterPage/RegisterPage';
-import { NotFound } from './components/page/NotFoundPage/NotFound';
+import MainPage from './components/pages/MainPage/MainPage';
+import { PopBrowsePage } from './components/pages/PopBrowsePage/PopBrowsePage';
+import { ExitPage } from './components/pages/ExitPage/ExitPage';
+import { LoginPage } from './components/pages/LoginPage/LoginPage';
+import { RegisterPage } from './components/pages/RegisterPage/RegisterPage';
+import { NotFound } from './components/pages/NotFoundPage/NotFound';
 
 
 

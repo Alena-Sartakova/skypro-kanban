@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
-
 import { Wrapper } from "../LoginPage/LoginPage.styled";
 import { routesPath } from "../routesPath";
+
+
+
 
 
 export const NotFound = () => {
