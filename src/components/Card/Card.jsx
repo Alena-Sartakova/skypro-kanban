@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { themeList } from "../data.js";
 import * as S from "./Card.styled.js";
 
-function Card ({ theme, title, date, id }) {
+function Card({ theme, title, date, id }) {
 
     return (
 
@@ -23,7 +23,7 @@ function Card ({ theme, title, date, id }) {
                 </S.CardGroup>
 
                 <S.CardContent>
-                    <Link to={`task/${id}`}>
+                    <Link to={"/card/:id"}>
                         <S.CardTitle>{title}</S.CardTitle>
                     </Link>
                     <S.CardDate>
