@@ -26,8 +26,8 @@ export const topicStyles = {
         color: "#06b16e",
     },
     _gray: {
-      backgroundColor: "#94a6be",
-      color: "#ffffff",
+        backgroundColor: "#94a6be",
+        color: "#ffffff",
     },
 };
 

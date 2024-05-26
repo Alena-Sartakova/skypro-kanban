@@ -3,7 +3,10 @@ import { themeList } from "../data.js";
 import * as S from "./Card.styled.js";
 
 function Card({ theme, title, date, id }) {
-
+    console.log(id);
+    console.log(title);
+    console.log(date);
+    console.log(theme);
     return (
 
         <S.CardItem>
@@ -13,17 +16,17 @@ function Card({ theme, title, date, id }) {
                         <S.CardName>{theme}</S.CardName>
                     </S.CardTopic>
 
-                    <a href="#popBrowse" target="_self">
+                    <Link to={"/card/${id}"} >
                         <S.CardBtn>
                             <S.CardBtnDiv></S.CardBtnDiv>
                             <S.CardBtnDiv></S.CardBtnDiv>
                             <S.CardBtnDiv></S.CardBtnDiv>
                         </S.CardBtn>
-                    </a>
+                    </Link>
                 </S.CardGroup>
 
                 <S.CardContent>
-                    <Link to={"/card/:id"}>
+                    <Link to={"/card/${id}"}>
                         <S.CardTitle>{title}</S.CardTitle>
                     </Link>
                     <S.CardDate>
