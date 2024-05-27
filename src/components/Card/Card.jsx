@@ -16,7 +16,7 @@ function Card({ theme, title, date, id }) {
                         <S.CardName>{theme}</S.CardName>
                     </S.CardTopic>
 
-                    <Link to={"/card/${id}"} >
+                    <Link to={`/card/${id}`} >
                         <S.CardBtn>
                             <S.CardBtnDiv></S.CardBtnDiv>
                             <S.CardBtnDiv></S.CardBtnDiv>
@@ -26,7 +26,7 @@ function Card({ theme, title, date, id }) {
                 </S.CardGroup>
 
                 <S.CardContent>
-                    <Link to={"/card/${id}"}>
+                    <Link to={`/card/${id}`}>
                         <S.CardTitle>{title}</S.CardTitle>
                     </Link>
                     <S.CardDate>
