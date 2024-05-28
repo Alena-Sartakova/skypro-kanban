@@ -65,7 +65,7 @@ export function LoginPage({ setUser }) {
                                     type="text"
                                     name="login"
                                     
-                                    placeholder="Эл. почта"
+                                    placeholder="Логин"
                                     value={loginData.login}
                                     onChange={handleInputChange}
                                 />

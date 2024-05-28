@@ -25,17 +25,17 @@ export const RegisterPage = ({ setUser }) => {
         e.preventDefault();
 
         if (!regData.name || regData.name.trim().length === 0) {
-            setAddRegError("Не введено имя.");
+            setAddRegError("Не введено имя");
             return;
         }
 
         if (!regData.login || regData.login.trim().length === 0) {
-            setAddRegError("Не введён логин.");
+            setAddRegError("Не введена почта");
             return;
         }
 
         if (!regData.password || regData.password.trim().length === 0) {
-            setAddRegError("Не введён пароль.");
+            setAddRegError("Не введён пароль");
             return;
         }
 
@@ -51,11 +51,11 @@ export const RegisterPage = ({ setUser }) => {
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target; 
+        const { name, value } = e.target;
 
         setRegData({
-            ...regData, 
-            [name]: value, 
+            ...regData,
+            [name]: value,
         });
     };
 
@@ -71,32 +71,29 @@ export const RegisterPage = ({ setUser }) => {
                         <S.ModalFormLogin id="formLogUp" action="#">
                             <S.ModalInput
                                 type="text"
-                                name="first-name"
-                                id="first-name"
-                                placeholder="Имя"
                                 value={regData.name}
                                 onChange={handleInputChange}
+                                name="name"
+                                placeholder="Имя"
                             />
                             <S.ModalInput
                                 type="text"
-                                name="login"
-                                id="loginReg"
-                                placeholder="Эл. почта"
                                 value={regData.login}
                                 onChange={handleInputChange}
+                                name="login"
+                                placeholder="Логин"
                             />
                             <S.ModalInput
                                 type="password"
-                                name="password"
-                                id="passwordFirst"
-                                placeholder="Пароль"
                                 value={regData.password}
                                 onChange={handleInputChange}
+                                name="password"
+                                placeholder="Пароль"
                             />
-                            <Link to={routesPath.LOGIN}>
+                            {addRegError && <p style={{ color: "red" }}>{addRegError}</p>}
+                            <Link to={routesPath.MAIN}>
                                 <S.ModalBtnRegisterEnter id="RegistrEnter">
-                                    <S.ModalBtnRegisterEnterA>
-                                        {" "}
+                                    <S.ModalBtnRegisterEnterA onClick={handleReg}>
                                         Зарегистрироваться
                                     </S.ModalBtnRegisterEnterA>
                                 </S.ModalBtnRegisterEnter>

@@ -45,6 +45,7 @@ export async function regUser({ login, name, password }) {
   if (!response.ok) {
     throw new Error("Пользователь уже зарегистрирован");
   }
+  
   const data = await response.json();
 
   return data;
