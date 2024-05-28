@@ -7,18 +7,29 @@ import { cardList } from '../../data';
 import NewCardPopup from '../../popups/NewCard/NewCard';
 import { Outlet } from 'react-router-dom';
 import { Wrapper } from '../LoginPage/LoginPage.styled';
-import BrowsePopup from '../../popups/Browse/Browse';
+import { getCadrs } from '../../../api';
 
 
-function MainPage() {
+
+function MainPage({user}) {
     const [cards, setCards] = useState(cardList);
     const [isLoaded, setIsLoaded] = useState(true);
 
     useEffect(() => {
-        setTimeout(() => {
+        try {
+          setIsLoaded(true);
+          getCadrs({token: user.token})
+          .then((data) => {
+            console.log(data);
+            setCards(data.tasks);
+          })
+        } catch (error) {
+            console.error(error);
+
+          } finally {
             setIsLoaded(false);
-        }, 2000);
-    }, []);
+          }
+        }, [setCards, user ]);
 
     function addCard() {
         setCards([
