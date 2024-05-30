@@ -24,3 +24,7 @@ export const StyledMainContent = styled.div`
     display: block;
   }
 `;
+export const Loader  = styled.h1`
+display: flex;
+  justify-content: center;
+`;

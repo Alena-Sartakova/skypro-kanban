@@ -12,8 +12,8 @@ const Column = ({ title, cardList }) => {
                     title={card.title}
                     theme={card.theme}
                     date={card.date}
-                    key={card.id}
-                    id={card.id}
+                    key={card._id}
+                    id={card._id}
                 />
             ))}
         </S.StyledCard>
