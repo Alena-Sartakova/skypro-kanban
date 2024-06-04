@@ -1,8 +1,10 @@
+import {  useTasks } from "../../hooks/useTasks.jsx";
 import Column from "../Column/Column";
 import { statusList } from "../data";
 import * as S from "./Main.styled.js";
 
-function Main({ cardList, isLoaded }) {
+function Main({  isLoaded }) {
+    const {tasks} = useTasks(); 
     return (
 
         <main className="main">
@@ -14,7 +16,7 @@ function Main({ cardList, isLoaded }) {
                             <Column
                                 key={item}
                                 title={item}
-                                cardList={cardList.filter((card) => card.status === item)}
+                                cardList={tasks.filter((card) => card.status === item)}
                             />
                         ))}
 

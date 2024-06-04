@@ -10,7 +10,7 @@ const Column = ({ title, cardList }) => {
             {cardList.map((card) => (
                 <Card
                     title={card.title}
-                    theme={card.theme}
+                    theme={card.topic}
                     date={card.date}
                     key={card._id}
                     id={card._id}

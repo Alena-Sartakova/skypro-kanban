@@ -8,6 +8,8 @@ import { ExitPage } from './components/pages/ExitPage/ExitPage';
 import { LoginPage } from './components/pages/LoginPage/LoginPage';
 import { RegisterPage } from './components/pages/RegisterPage/RegisterPage';
 import { NotFound } from './components/pages/NotFoundPage/NotFound';
+import { UserProvider } from './contexts/user';
+import { TasksProvider } from './contexts/tasks';
 
 
 
@@ -23,6 +25,8 @@ export const AppRoutes = () => {
   // }
 
   return (
+    <UserProvider>
+      <TasksProvider>
     <Routes>
       <Route element={<PrivateRoute user={user} />}>
         <Route path={routesPath.MAIN} element={<MainPage user={user}/>}>
@@ -34,5 +38,7 @@ export const AppRoutes = () => {
       <Route path={routesPath.REGISTER} element={<RegisterPage setUser={setUser}/>} />
       <Route path={routesPath.NOT_FOUND} element={<NotFound />} />
     </Routes>
+    </TasksProvider>
+    </UserProvider>
   )
 };
