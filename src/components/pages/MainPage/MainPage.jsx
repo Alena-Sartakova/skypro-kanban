@@ -20,11 +20,7 @@ function MainPage() {
   const { user } = useUser();
   const { setTasks } = useTasks();
   const [error, setError] = useState(null);
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoaded(false);
-    }, 2000); // 2 секунды задержки
-  }, []);
+
 
   useEffect(() => {
     const onCards = async () => {
@@ -43,18 +39,7 @@ function MainPage() {
     onCards();
   }, [setTasks, user.token]);
 
-  // function addCard() {
-  //   setTasks([
-  //     ...cards,
-  //     {
-  //       id: cards.length + 1,
-  //       theme: "Research",
-  //       title: "Нужно сделать",
-  //       date: "30.11.23",
-  //       status: "Без статуса",
-  //     },
-  //   ]);
-  // }
+
 
   return (
     <Wrapper>
