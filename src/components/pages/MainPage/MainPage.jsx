@@ -15,7 +15,7 @@ import { useTasks } from '../../../hooks/useTasks';
 
 
 function MainPage() {
-  // const [cards, setCards] = useState(cardList);
+ 
   const [isLoaded, setIsLoaded] = useState(true);
   const { user } = useUser();
   const { setTasks } = useTasks();
