@@ -2,53 +2,44 @@ import { useEffect, useState } from 'react';
 
 import Main from '../../Main/Main';
 import Header from '../../Header/Header';
-import { cardList } from '../../data';
+
 
 import NewCardPopup from '../../popups/NewCard/NewCard';
 import { Outlet } from 'react-router-dom';
 import { Wrapper } from '../LoginPage/LoginPage.styled';
 import { getCadrs } from '../../../api';
 import { Loader } from '../../Main/Main.styled';
+import { useUser } from '../../../hooks/useUser';
+import { useTasks } from '../../../hooks/useTasks';
 
 
 
-function MainPage({ user }) {
-  const [cards, setCards] = useState(cardList);
+function MainPage() {
+ 
   const [isLoaded, setIsLoaded] = useState(true);
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoaded(false);
-    }, 2000); // 2 секунды задержки
-  }, []);
+  const { user } = useUser();
+  const { setTasks } = useTasks();
+  const [error, setError] = useState(null);
+
 
   useEffect(() => {
-    try {
-      setIsLoaded(true);
-      getCadrs({ token: user.token })
-        .then((data) => {
-          console.log(data);
-          setCards(data.tasks);
-        })
-    } catch (error) {
-      console.error(error);
+    const onCards = async () => {
+      try {
+        setIsLoaded(true);
+        const response = await getCadrs({ token: user.token });
+        console.log(response);
+        setTasks(response.tasks);
+      } catch (error) {
+        console.error(error);
+        setError("Не удалось загрузить данные, попробуйте позже");
+      } finally {
+        setIsLoaded(false);
+      }
+    };
+    onCards();
+  }, [setTasks, user.token]);
 
-    } finally {
-      setIsLoaded(false);
-    }
-  }, [setCards, user]);
 
-  function addCard() {
-    setCards([
-      ...cards,
-      {
-        id: cards.length + 1,
-        theme: "Research",
-        title: "Нужно сделать",
-        date: "30.11.23",
-        status: "Без статуса",
-      },
-    ]);
-  }
 
   return (
     <Wrapper>
@@ -56,9 +47,9 @@ function MainPage({ user }) {
       <Outlet />
 
       <NewCardPopup />
-      <Header addCard={addCard} />
-      {isLoaded ? <Loader>Данные загружаются...</Loader> : <Main cardList={cards} />}
-
+      <Header />
+      {isLoaded ? <Loader>Данные загружаются...</Loader> : <Main />}
+      {error && <span style={{ color: "red" }}>Случилась ошибка</span>}
     </Wrapper>
 
   );
