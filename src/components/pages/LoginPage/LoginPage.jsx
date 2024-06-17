@@ -5,10 +5,12 @@ import { Wrapper } from "./LoginPage.styled.js";
 import { routesPath } from "../routesPath.js";
 import { useState } from "react";
 import { loginUser } from "../../../api.js";
+import { useUser } from "../../../hooks/useUser.jsx";
 
 
-export function LoginPage({ setUser }) {
-    const navigate = useNavigate();
+export function LoginPage() {
+  const {isLoginUser} = useUser();
+    // const navigate = useNavigate();
     const loginForm = {
         login: "",
         password: "",
@@ -31,11 +33,9 @@ export function LoginPage({ setUser }) {
         }
     
         try {
-          await loginUser(loginData).then((data) => {
-            console.log(data);
-            setUser(data.user);
-            navigate(routesPath.MAIN);
-          });
+          const data = await loginUser(loginData);
+          console.log(data);
+          isLoginUser(data.user);
         } catch (error) {
           console.log(error);
           setAddLoginError(error.message);

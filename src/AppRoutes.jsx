@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { useState } from 'react';
 import { routesPath } from './components/pages/routesPath';
 import { PrivateRoute } from './components/PrivateRoute';
@@ -27,18 +27,18 @@ export const AppRoutes = () => {
   return (
     <UserProvider>
       <TasksProvider>
-    <Routes>
-      <Route element={<PrivateRoute user={user} />}>
-        <Route path={routesPath.MAIN} element={<MainPage user={user}/>}>
-          <Route path={routesPath.CARD_ID} element={<PopBrowsePage />} />
-          <Route path={routesPath.EXIT} element={<ExitPage setUser={setUser} />} />
-        </Route>
-      </Route>
-      <Route path={routesPath.LOGIN} element={<LoginPage setUser={setUser} />} />
-      <Route path={routesPath.REGISTER} element={<RegisterPage setUser={setUser}/>} />
-      <Route path={routesPath.NOT_FOUND} element={<NotFound />} />
-    </Routes>
-    </TasksProvider>
+        <Routes>
+          <Route element={<PrivateRoute user={user} />}>
+            <Route path={routesPath.MAIN} element={<MainPage user={user} />}>
+              <Route path={routesPath.CARD_ID} element={<PopBrowsePage />} />
+              <Route path={routesPath.EXIT} element={<ExitPage setUser={setUser} />} />
+            </Route>
+          </Route>
+          <Route path={routesPath.LOGIN} element={<LoginPage setUser={setUser} />} />
+          <Route path={routesPath.REGISTER} element={<RegisterPage setUser={setUser} />} />
+          <Route path={routesPath.NOT_FOUND} element={<NotFound />} />
+        </Routes>
+      </TasksProvider>
     </UserProvider>
   )
 };
