@@ -1,4 +1,6 @@
-<script setup></script>
+<script setup>
+
+</script>
 
 <template>
   <main>
@@ -330,7 +332,6 @@
       </div>
 
       <!-- pop-up end-->
-
       <header class="header">
         <div class="container">
           <div class="header__block">
@@ -359,6 +360,7 @@
           </div>
         </div>
       </header>
+
       <main class="main">
         <div class="container">
           <div class="main__block">
@@ -981,7 +983,5 @@
         </div>
       </main>
     </div>
-
-
   </main>
 </template>
