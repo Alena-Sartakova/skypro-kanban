@@ -3,6 +3,14 @@ import BaseHeader from '@/components/BaseHeader.vue'
 import ExitModal from '@/components/ExitModal.vue'
 import NewCardModal from '@/components/NewCardModal.vue'
 import TaskDesk from '@/components/TaskDesk.vue'
+import { onMounted, ref } from 'vue'
+
+const loading = ref(true)
+onMounted(() => {
+  setTimeout(() => {
+    loading.value = false
+  }, 3000)
+})
 </script>
 
 <template>
@@ -185,7 +193,8 @@ import TaskDesk from '@/components/TaskDesk.vue'
 
       <!-- pop-up end-->
       <BaseHeader />
-      <TaskDesk />
+      <div v-if="loading">Идёт загрузка...</div>
+      <TaskDesk v-else :loading="loading" :words="words" />
     </div>
   </main>
 </template>

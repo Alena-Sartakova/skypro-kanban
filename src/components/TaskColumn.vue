@@ -1,11 +1,12 @@
 <template>
-  <div class="main__column column">
+
+  <div class="main__column column" >
     <div class="column__title">
       <p>Без статуса</p>
     </div>
     <TaskCard />
   </div>
-  <div class="main__column">
+  <div class="main__column" >
     <div class="column__title">
       <p>Нужно сделать</p>
     </div>
@@ -29,10 +30,14 @@
     </div>
     <TaskCard />
   </div>
+
 </template>
 
+
 <script setup>
+
 import TaskCard from './TaskCard.vue'
+
 </script>
 
 <style lang="scss" scoped></style>
