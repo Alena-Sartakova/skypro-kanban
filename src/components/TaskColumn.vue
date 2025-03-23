@@ -4,9 +4,9 @@
     <div class="column__title">
       <p>Без статуса</p>
     </div>
-    <TaskCard />
+    <TaskCard v-for="task in tasks" :key="task.id"/>
   </div>
-  <div class="main__column" >
+<!--   <div class="main__column" >
     <div class="column__title">
       <p>Нужно сделать</p>
     </div>
@@ -29,7 +29,7 @@
       <p>Готово</p>
     </div>
     <TaskCard />
-  </div>
+  </div> -->
 
 </template>
 

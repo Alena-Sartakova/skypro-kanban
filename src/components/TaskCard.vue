@@ -1,5 +1,5 @@
 <template>
-  <div class="cards" v-for="task in tasks" :key="task.id">
+  <div class="cards" >
     <div class="cards__item">
       <div class="cards__card card">
         <div class="card__group">
@@ -58,12 +58,7 @@
 </template>
 
 <script setup>
-import { getTasks } from '@/mokcs/tasks'
-import { onMounted, ref } from 'vue'
-const tasks = ref([])
-onMounted(() => {
-  tasks.value = getTasks()
-});
+
 defineProps({
   topic: String,
   title: String,
