@@ -4,7 +4,7 @@
       <div class="cards__card card">
         <div class="card__group">
           <div class="card__theme _orange">
-            <p class="_orange">{{ task.topic }}</p>
+            <p class="_orange">{{ topic }}</p>
           </div>
           <a href="#popBrowse" target="_self">
             <div class="card__btn">
@@ -16,7 +16,7 @@
         </div>
         <div class="card__content">
           <a href="" target="_blank">
-            <h3 class="card__title">{{ task.title }}</h3>
+            <h3 class="card__title">{{ title }}</h3>
           </a>
           <div class="card__date">
             <svg
@@ -47,7 +47,7 @@
                 </clipPath>
               </defs>
             </svg>
-            <p>{{ task.date }}</p>
+            <p>{{ date }}</p>
           </div>
         </div>
       </div>
