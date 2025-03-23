@@ -194,7 +194,7 @@ onMounted(() => {
       <!-- pop-up end-->
       <BaseHeader />
       <div v-if="loading">Идёт загрузка...</div>
-      <TaskDesk v-else :loading="loading" :words="words" />
+      <TaskDesk v-else :loading="loading" />
     </div>
   </main>
 </template>
