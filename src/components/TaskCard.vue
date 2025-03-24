@@ -58,13 +58,14 @@
 </template>
 
 <script setup>
-
 defineProps({
-  topic: String,
-  title: String,
-  date: String,
-  status: String,
+  tasks: { type: Array, require: true },
+  topic: { type: String, require: true },
+  title: { type: String, require: true },
+  date: { type: String, require: true },
+  status: { type: String, require: true },
 })
+
 </script>
 
 <style lang="scss" scoped></style>
