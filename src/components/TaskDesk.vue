@@ -3,10 +3,10 @@
     <div class="container">
       <div class="main__block">
         <div class="main__content">
-          <TaskColumn :tasks="noStatusTask" />
-          <TaskColumn :tasks="noStatusTask" />
-          <TaskColumn :tasks="noStatusTask" />
-          <TaskColumn :tasks="noStatusTask" />
+          <TaskColumn :tasks="noStatusTask" v-bind="task"/>
+          <TaskColumn :tasks="noStatusTask" v-bind="task"/>
+          <TaskColumn :tasks="noStatusTask" v-bind="task"/>
+          <TaskColumn :tasks="noStatusTask" v-bind="task"/>
         </div>
       </div>
     </div>
