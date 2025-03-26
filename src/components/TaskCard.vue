@@ -59,8 +59,7 @@
 
 <script setup>
 defineProps({
-  tasks: { type: Array, require: true },
-  topic: { type: String, require: true },
+   topic: { type: String, require: true },
   title: { type: String, require: true },
   date: { type: String, require: true },
   status: { type: String, require: true },
