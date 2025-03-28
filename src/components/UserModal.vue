@@ -1,6 +1,6 @@
 <template>
-  <a href="#user-set-target" class="header__user _hover02" v-if="userModalOn">Ivan Ivanov</a>
-  <div  class="header__pop-user-set pop-user-set" id="user-set-target" v-else>
+  <a href="#user-set-target" class="header__user _hover02"  @click="isUserModalVisible = !isUserModalVisible" v-if="true">Ivan Ivanov</a>
+  <div  class="header__pop-user-set pop-user-set" id="user-set-target" v-if="false">
     <!-- <a href="">x</a> -->
     <p class="pop-user-set__name">Ivan Ivanov</p>
     <p class="pop-user-set__mail">ivan.ivanov@gmail.com</p>
@@ -15,7 +15,8 @@
 <script setup>
 import { ref } from 'vue';
 
-const userModalOn = ref(true);
+const isUserModalVisible = ref(true);
+
 
 </script>
 <style lang="scss" scoped></style>

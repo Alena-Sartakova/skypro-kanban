@@ -9,13 +9,13 @@
     topic: "Research",
     title: "Название задачи",
     date: "30.10.23",
-    status: "Без статуса",
+    status: "В работе",
   },
   {id:3,
     topic: "Copywriting",
     title: "Название задачи",
     date: "30.10.23",
-    status: "Без статуса",
+    status: "Готово",
   },
 ];
 
