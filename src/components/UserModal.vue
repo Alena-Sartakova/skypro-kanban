@@ -1,5 +1,5 @@
 <template>
-  <a href="#user-set-target" class="header__user _hover02"  @click="isUserModalVisible = !isUserModalVisible" v-if="isUserModalVisible">Ivan Ivanov</a>
+  <a href="#user-set-target" class="header__user _hover02"  @click="isUserModalVisible = !isUserModalVisible" >Ivan Ivanov</a>
   <div  class="header__pop-user-set pop-user-set" id="user-set-target" v-if="!isUserModalVisible">
     <!-- <a href="">x</a> -->
     <p class="pop-user-set__name">Ivan Ivanov</p>
