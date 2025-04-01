@@ -33,8 +33,21 @@ onMounted(() => {
 
       <!-- pop-up end-->
       <BaseHeader />
+      <Transition name="loading">
       <div v-if="loading">Идёт загрузка...</div>
       <TaskDesk v-else :loading="loading" />
+    </Transition>
     </div>
   </main>
 </template>
+<style lang="scss" scoped>
+.loading-enter-active,
+.loading-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.loading-enter-from,
+.loading-leave-to {
+  opacity: 0;
+}
+</style>

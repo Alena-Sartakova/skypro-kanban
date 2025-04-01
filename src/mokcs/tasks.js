@@ -19,19 +19,10 @@
   },
 ];
 
-const statusList = [
-  "Без статуса",
-  "Нужно сделать",
-  "В работе",
-  "Тестирование",
-  "Готово",
-];
-
-export function getStatusList() {
-  return statusList
-};
 export function getTasks() {
   return tasks
 };
+
+
 
 
