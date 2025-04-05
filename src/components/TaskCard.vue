@@ -3,8 +3,8 @@
     <div class="cards__item">
       <div class="cards__card card">
         <div class="card__group">
-          <div class="card__theme _orange">
-            <p class="_orange">{{ topic }}</p>
+          <div :class="['card__theme _orange']" >
+            <p :class="['_orange']">{{ topic }}</p>
           </div>
           <a href="#popBrowse" target="_self">
             <div class="card__btn">
@@ -149,4 +149,5 @@ defineProps({
   color: #94a6be;
   letter-spacing: 0.2px;
 }
+
 </style>
