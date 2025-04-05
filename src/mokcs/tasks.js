@@ -45,15 +45,7 @@ export function getTasks() {
   }
 }; */
 
-/* export function getTopicColor() => {
-  if (topic === "Web Design") {
-    return "_orange";
-  } else if (topic === "Research") {
-    return "_green";
-  } else if (topic === "Copywriting") {
-    return "_purple"
-  } else {return "_gray"}
-} */
+
 
 
 

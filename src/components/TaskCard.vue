@@ -1,10 +1,10 @@
 <template>
-  <div class="cards" >
+  <div class="cards">
     <div class="cards__item">
       <div class="cards__card card">
         <div class="card__group">
-          <div :class="['card__theme _orange']" >
-            <p :class="['_orange']">{{ topic }}</p>
+          <div :class="['card__theme']">
+            <p :class="TopicColor">{{ topic }}</p>
           </div>
           <a href="#popBrowse" target="_self">
             <div class="card__btn">
@@ -52,19 +52,28 @@
         </div>
       </div>
     </div>
-
-
   </div>
 </template>
 
 <script setup>
 defineProps({
-   topic: { type: String, require: true },
+  topic: { type: String, require: true },
   title: { type: String, require: true },
   date: { type: String, require: true },
   status: { type: String, require: true },
 })
 
+function TopicColor(topic) {
+  if (topic === 'Web Design') {
+    return '_orange'
+  } else if (topic === 'Research') {
+    return '_green'
+  } else if (topic === 'Copywriting') {
+    return '_purple'
+  } else {
+    return '_gray'
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -149,5 +158,4 @@ defineProps({
   color: #94a6be;
   letter-spacing: 0.2px;
 }
-
 </style>
