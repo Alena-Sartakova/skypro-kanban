@@ -1,7 +1,8 @@
 <template>
   <main>
     <Transition name="show">
-      <div class="wrapper" v-show="show">
+      <div v-if="loading">Идёт загрузка...</div>
+      <div class="wrapper" v-else :loading="loading">
         <!-- pop-up start-->
 
         <div class="pop-exit" id="popExit">
@@ -18,9 +19,8 @@
 
         <!-- pop-up end-->
         <BaseHeader />
-
-        <div v-if="loading">Идёт загрузка...</div>
-        <TaskDesk v-else :loading="loading" />
+        
+        <TaskDesk  />
       </div>
     </Transition>
   </main>
@@ -32,12 +32,7 @@ import ExitModal from '@/components/ExitModal.vue'
 import NewCardModal from '@/components/NewCardModal.vue'
 import TaskDesk from '@/components/TaskDesk.vue'
 import { onMounted, ref } from 'vue'
-const show = ref(false)
-onMounted(() => {
-  setTimeout(() => {
-    show.value = true
-  }, 2000)
-})
+
 
 const loading = ref(true)
 onMounted(() => {

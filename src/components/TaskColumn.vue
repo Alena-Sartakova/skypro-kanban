@@ -4,6 +4,7 @@
       <p>{{ title }}</p>
     </div>
     <TaskCard v-for="task in tasks" :key="task.id" v-bind="task" />
+    
   </div>
 
 </template>

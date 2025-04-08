@@ -4,7 +4,7 @@
       <div class="cards__card card">
         <div class="card__group">
           <div :class="['card__theme']">
-            <p :class="TopicColor">{{ topic }}</p>
+            <p :class="TopicColor(topic)">{{ topic }}</p>
           </div>
           <a href="#popBrowse" target="_self">
             <div class="card__btn">
