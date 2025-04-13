@@ -111,7 +111,6 @@ function TopicColor(topic) {
 .card__theme {
   width: auto;
   height: 20px;
-  padding: 5px 14px;
   border-radius: 18px;
 }
 
