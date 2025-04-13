@@ -6,7 +6,7 @@
       <div class="pop-exit" id="popExit">
         <ExitModal />
       </div>
-
+      <RouterView />
       <div class="pop-new-card" id="popNewCard">
         <NewCardModal />
       </div>
@@ -21,10 +21,12 @@
         <div v-if="loading">Идёт загрузка...</div>
         <TaskDesk v-else :loading="loading" />
       </Transition>
+
     </div>
   </main>
 </template>
 <script setup>
+
 import BaseHeader from '@/components/BaseHeader.vue'
 import BrowseModal from '@/components/BrowseModal.vue'
 import ExitModal from '@/components/ExitModal.vue'
