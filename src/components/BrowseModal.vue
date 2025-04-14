@@ -147,7 +147,7 @@
                 <a href="#">Удалить задачу</a>
               </button>
             </div>
-            <button class="btn-browse__close _btn-bg _hover01"><a href="#">Закрыть</a></button>
+
           </div>
           <div class="pop-browse__btn-edit _hide">
             <div class="btn-group">
@@ -157,7 +157,9 @@
                 <a href="#">Удалить задачу</a>
               </button>
             </div>
-            <button class="btn-edit__close _btn-bg _hover01"><a href="#">Закрыть</a></button>
+            <button class="btn-edit__close _btn-bg _hover01">
+              <RouterLink to="/">Закрыть</RouterLink>
+            </button>
           </div>
         </div>
       </div>
@@ -166,14 +168,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
 
-const route = useRoute()
-const task = computed(() =>{
- return tasks.find((t) => t.id === route.params.id || { topic: '', title: '', date: '', status: '' })
-}
-)
 </script>
 
 <style lang="scss" scoped>

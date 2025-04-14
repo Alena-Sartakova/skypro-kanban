@@ -3,20 +3,27 @@
     <div class="column__title">
       <p>{{ title }}</p>
     </div>
-    <TaskCard v-for="task in tasks" :key="task.id" v-bind="task" />
-    
+    <RouterLink to="/browse-card/:id">
+      <TaskCard v-for="task in tasks" :key="task.id" v-bind="task" />
+    </RouterLink>
   </div>
-
 </template>
 
 <script setup>
 import TaskCard from './TaskCard.vue'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
-defineProps({
-  tasks: { type: Array, require: true},
-  title: {type: String, require: true},
+const route = useRoute()
+const task = computed(() => {
+  return tasks.find(
+    (t) => t.id === route.params.id || { topic: '', title: '', date: '', status: '' },
+  )
 });
-
+defineProps({
+  tasks: { type: Array, require: true },
+  title: { type: String, require: true },
+})
 </script>
 
 <style lang="scss" scoped>
