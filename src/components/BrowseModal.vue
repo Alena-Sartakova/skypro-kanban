@@ -6,11 +6,11 @@
           <div class="pop-browse__top-block">
             <h3 class="pop-browse__ttl">Название задачи</h3>
             <div class="categories__theme theme-top _orange _active-category">
-              <p class="_orange">Web Design</p>
+              <p class="_orange">{{ topic }}</p>
             </div>
           </div>
           <div class="pop-browse__status status">
-            <p class="status__p subttl">Статус</p>
+            <p class="status__p subttl">{{ status }}</p>
             <div class="status__themes">
               <div class="status__theme _hide">
                 <p>Без статуса</p>
@@ -158,7 +158,7 @@
               </button>
             </div>
             <button class="btn-edit__close _btn-bg _hover01">
-              <RouterLink to="/">Закрыть</RouterLink>
+             <RouterLink to="/">Закрыть</RouterLink>
             </button>
           </div>
         </div>
@@ -168,6 +168,12 @@
 </template>
 
 <script setup>
+defineProps({
+  topic: { type: String, require: true },
+  title: { type: String, require: true },
+  date: { type: String, require: true },
+  status: { type: String, require: true },
+})
 
 </script>
 

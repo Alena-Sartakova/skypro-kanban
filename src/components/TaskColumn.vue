@@ -11,19 +11,12 @@
 
 <script setup>
 import TaskCard from './TaskCard.vue'
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
 
-const route = useRoute()
-const task = computed(() => {
-  return tasks.find(
-    (t) => t.id === route.params.id || { topic: '', title: '', date: '', status: '' },
-  )
-});
 defineProps({
   tasks: { type: Array, require: true },
   title: { type: String, require: true },
 })
+
 </script>
 
 <style lang="scss" scoped>
