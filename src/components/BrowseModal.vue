@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
     <div class="pop-browse__container">
       <div class="pop-browse__block">
         <div class="pop-browse__content">
@@ -168,12 +168,31 @@
 </template>
 
 <script setup>
-defineProps({
+
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+
+const props = defineProps({
+
   topic: { type: String, require: true },
   title: { type: String, require: true },
   date: { type: String, require: true },
   status: { type: String, require: true },
 })
+console.log(props.topic);
+
+const route = useRoute();
+console.log(route.params.id);
+
+const task = computed(() => {
+   return tasks.value.find((w) => w.id === route.params.id) || {
+    topic: "",
+    title: "",
+    date: "",
+    status: "",
+   }
+});
 
 </script>
 

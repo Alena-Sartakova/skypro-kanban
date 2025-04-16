@@ -6,19 +6,6 @@
 
 <script setup>
 import BrowseModal from '@/components/BrowseModal.vue';
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
-
-const task = computed(() => {
-   return tasks.value.find((t) => t.id === route.params.id) || {
-    topic: "",
-    title: "",
-    date: "",
-    status: "",
-   }
-})
 
 
 

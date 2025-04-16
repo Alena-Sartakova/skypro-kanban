@@ -56,6 +56,8 @@
 </template>
 
 <script setup>
+
+
 defineProps({
   topic: { type: String, require: true },
   title: { type: String, require: true },
@@ -74,6 +76,7 @@ function TopicColor(topic) {
     return '_gray'
   }
 }
+
 </script>
 
 <style lang="scss" scoped>
