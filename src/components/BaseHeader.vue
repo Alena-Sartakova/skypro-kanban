@@ -10,9 +10,9 @@
         </div>
         <nav class="header__nav">
           <button class="header__btn-main-new _hover01" id="btnMainNew">
-            <a href="#popNewCard">Создать новую задачу</a>
+           <RouterLink to="/new-card">Создать новую задачу</RouterLink>
           </button>
-          <UserModal />
+          <UserModal @click="logout"/>
         </nav>
       </div>
     </div>
@@ -20,7 +20,15 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 import UserModal from './UserModal.vue'
+const router = useRouter()
+
+function logout(e) {
+   e.preventDefault() // Блокируем стандартное действие ссылки
+   localStorage.removeItem('userInfo') // Удаляем информацию о пользователе
+   router.push('/sign-in') // Отправляем на экран входа
+}
 </script>
 
 <style lang="scss" scoped>

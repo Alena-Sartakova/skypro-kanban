@@ -7,10 +7,10 @@
             <form class="pop-exit__form" id="formExit" action="#">
               <div class="pop-exit__form-group">
                 <button class="pop-exit__exit-yes _hover01" id="exitYes">
-                  <a href="modal/signin.html">Да, выйти</a>
+                  <RouterLink to="/sign-in">Да, выйти</RouterLink>
                 </button>
                 <button class="pop-exit__exit-no _hover03" id="exitNo">
-                  <a href="main.html">Нет, остаться</a>
+                 <RouterLink to="/">Нет, остаться</RouterLink>
                 </button>
               </div>
             </form>
