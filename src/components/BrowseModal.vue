@@ -172,16 +172,6 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-
-const props = defineProps({
-
-  topic: { type: String, require: true },
-  title: { type: String, require: true },
-  date: { type: String, require: true },
-  status: { type: String, require: true },
-})
-console.log(props.topic);
-
 const route = useRoute();
 console.log(route.params.id);
 

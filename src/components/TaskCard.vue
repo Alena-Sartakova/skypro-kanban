@@ -6,13 +6,13 @@
           <div :class="['card__theme']">
             <p :class="TopicColor(topic)">{{ topic }}</p>
           </div>
-          <a href="#popBrowse" target="_self">
+          <RouterLink to="/browse-card/{{ id }}" target="_self">
             <div class="card__btn">
               <div></div>
               <div></div>
               <div></div>
             </div>
-          </a>
+          </RouterLink>
         </div>
         <div class="card__content">
           <a href="" target="_blank">
@@ -57,13 +57,12 @@
 
 <script setup>
 
-
 defineProps({
   topic: { type: String, require: true },
   title: { type: String, require: true },
   date: { type: String, require: true },
   status: { type: String, require: true },
-})
+  })
 
 function TopicColor(topic) {
   if (topic === 'Web Design') {
@@ -76,7 +75,6 @@ function TopicColor(topic) {
     return '_gray'
   }
 }
-
 </script>
 
 <style lang="scss" scoped>

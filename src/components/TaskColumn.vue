@@ -3,13 +3,14 @@
     <div class="column__title">
       <p>{{ title }}</p>
     </div>
-    <RouterLink to="/browse-card/:id">
+
       <TaskCard v-for="task in tasks" :key="task.id" v-bind="task" />
-    </RouterLink>
+
   </div>
 </template>
 
 <script setup>
+
 import TaskCard from './TaskCard.vue'
 
 defineProps({
