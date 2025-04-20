@@ -4,13 +4,13 @@
       <div class="pop-browse__block">
         <div class="pop-browse__content">
           <div class="pop-browse__top-block">
-            <h3 class="pop-browse__ttl">Название задачи</h3>
+            <h3 class="pop-browse__ttl">{{ task.title }}</h3>
             <div class="categories__theme theme-top _orange _active-category">
-              <p class="_orange">{{ topic }}</p>
+              <p class="_orange">{{ task.topic }}</p>
             </div>
           </div>
           <div class="pop-browse__status status">
-            <p class="status__p subttl">{{ status }}</p>
+            <p class="status__p subttl">{{ task.status }}</p>
             <div class="status__themes">
               <div class="status__theme _hide">
                 <p>Без статуса</p>
@@ -168,22 +168,24 @@
 </template>
 
 <script setup>
-
-import { computed } from 'vue';
+import { getTasks } from '@/mokcs/tasks';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-const route = useRoute();
-console.log(route.params.id);
+const tasks = ref(getTasks());
 
+const route = useRoute();
+/* console.log(route.params.id);
+console.log(tasks.value) */
 const task = computed(() => {
-   return tasks.value.find((w) => w.id === route.params.id) || {
+   return tasks.value.find((w) => w.id === Number(route.params.id)) || {
     topic: "",
     title: "",
     date: "",
     status: "",
    }
 });
-
+/* console.log(task.value) */
 </script>
 
 <style lang="scss" scoped>

@@ -10,7 +10,7 @@
                   <RouterLink to="/sign-in">Да, выйти</RouterLink>
                 </button>
                 <button class="pop-exit__exit-no _hover03" id="exitNo">
-                 <RouterLink to="/">Нет, остаться</RouterLink>
+                 <RouterLink to='/'>Нет, остаться</RouterLink>
                 </button>
               </div>
             </form>

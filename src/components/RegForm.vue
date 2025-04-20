@@ -12,7 +12,7 @@
 						<input class="modal__input login" type="text" name="login" id="loginReg" placeholder="Эл. почта">
 						<input class="modal__input password-first" type="password" name="password" id="passwordFirst" placeholder="Пароль">
 						<button class="modal__btn-signup-ent _hover01" id="SignUpEnter">
-            <RouterLink to="/">Зарегистрироваться</RouterLink>
+            <RouterLink to="/sign-up">Зарегистрироваться</RouterLink>
             </button>
 						<div class="modal__form-group">
 							<p>Уже есть аккаунт?
