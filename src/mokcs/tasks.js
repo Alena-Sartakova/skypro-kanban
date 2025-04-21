@@ -1,5 +1,5 @@
   const tasks = [
-  {id:1,
+/*   {id:1,
     topic: "Web Design",
     title: "Задача 1",
     date: "30.10.23",
@@ -16,7 +16,7 @@
     title: "Задача 3",
     date: "30.10.23",
     status: "Готово",
-  },
+  }, */
 ];
 
 export function getTasks() {

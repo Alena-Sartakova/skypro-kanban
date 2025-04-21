@@ -1,23 +1,55 @@
 import axios from 'axios'
 
-const API_URL = 'https://wedev-api.sky.pro/api/words/'
-// Эта переменная содержит базовый URL для запросов к нашему серверу
+const API_URL = 'https://wedev-api.sky.pro/api/kanban'
 
-export async function fetchCards({ token }) {
+
+export async function fetchTasks({ token }) {
 
    try {
-      // Здесь начинается попытка сделать запрос
+
       const data = await axios.get(API_URL, {
          headers: {
             Authorization: 'Bearer ' + token,
          },
       })
 
-      return data.data
-      // Возвращаем именно data.data,
-      // потому что библиотека axios кладет полезную нагрузку внутрь ключа data
+      return data.data.tasks
+
    } catch (error) {
-      // В случае ошибки выбрасываем исключение с сообщением
       throw new Error(error.message)
    }
+};
+
+export async function postTask({ token, task }) {
+  try {
+
+     const data = await axios.post(API_URL, task, {
+        headers: {
+           Authorization: 'Bearer ' + token,
+           'Content-Type': '',
+        },
+     })
+
+  return data.data.tasks
+  } catch (error) {
+
+     throw new Error(error.message)
+  }
+};
+
+export async function editTask({ token, id, task }) {
+  try {
+
+     const data = await axios.put(API_URL + id, task, {
+        headers: {
+           Authorization: 'Bearer ' + token,
+           'Content-Type': '',
+        },
+     })
+
+  return data.data.tasks
+  } catch (error) {
+
+     throw new Error(error.message)
+  }
 }
