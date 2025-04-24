@@ -20,19 +20,19 @@ const router = createRouter({
           path: '/exit',
           component: () => import('@/views/ExitView.vue'),
         },
-        {
-      path: '/:pathMatch(.*)*',
-      component: NotFoundView,
-    },
 
         {
           path: '/browse-card/:id',
           component: () => import('@/views/BrowseView.vue'),
         },
+        {
+          path: '/:pathMatch(.*)*',
+          component: NotFoundView,
+        },
       ],
       meta: {
         requiresAuth: true,
-     },
+      },
     },
     {
       path: '/sign-in',
@@ -46,21 +46,19 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       component: NotFoundView,
     },
-
-
   ],
-});
+})
 
 router.beforeEach((to, from, next) => {
   // Берем токен
-  const token = localStorage.getItem('userInfo');
+  const token = localStorage.getItem('userInfo')
 
   // Проверяем, действительно ли на маршруте нужна авторизация и есть ли токен
   if (to.meta.requiresAuth && !token) {
-     next('/sign-in'); // Если нет, уводим на страницу входа
+    next('/sign-in') // Если нет, уводим на страницу входа
   } else {
-     next(); // Иначе пропускаем пользователя
+    next() // Иначе пропускаем пользователя
   }
-});
+})
 
 export default router

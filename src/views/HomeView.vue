@@ -6,7 +6,7 @@
       <div class="pop-exit" id="popExit">
         <ExitModal />
       </div>
-      <RouterView />
+<RouterView />
       <div class="pop-new-card" id="popNewCard">
         <NewCardModal />
       </div>
