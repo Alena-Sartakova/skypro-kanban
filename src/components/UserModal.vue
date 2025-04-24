@@ -9,24 +9,17 @@
       <input type="checkbox" class="checkbox" name="checkbox" />
     </div>
     <button type="button" class="_hover03">
-      <a href="#popExit" @click="logout">Выйти</a>
+      <RouterLink to="/exit" >Выйти</RouterLink>
     </button>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { RouterLink } from 'vue-router';
 
 const isUserModalVisible = ref(true);
 
-const router = useRouter()
-
-function logout(e) {
-   e.preventDefault() // Блокируем стандартное действие ссылки
-   localStorage.removeItem('userInfo') // Удаляем информацию о пользователе
-   router.push('/sign-in') // Отправляем на экран входа
-}
 
 </script>
 <style lang="scss" scoped>

@@ -1,15 +1,11 @@
 <template>
   <div>
-<UserModal />
+    <ExitModal />
   </div>
 </template>
 
 <script setup>
-import UserModal from '@/components/UserModal.vue';
-
-
+import ExitModal from '@/components/ExitModal.vue'
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

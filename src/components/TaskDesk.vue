@@ -58,6 +58,7 @@ onMounted(() => {
 .main {
   width: 100%;
   background-color: #eaeef6;
+  z-index: 1;
 }
 .main__block {
   width: 100%;

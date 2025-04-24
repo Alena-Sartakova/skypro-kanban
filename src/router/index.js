@@ -16,6 +16,14 @@ const router = createRouter({
           path: '/new-card',
           component: () => import('@/views/NewCardView.vue'),
         },
+        {
+          path: '/exit',
+          component: () => import('@/views/ExitView.vue'),
+        },
+        {
+      path: '/:pathMatch(.*)*',
+      component: NotFoundView,
+    },
 
         {
           path: '/browse-card/:id',
@@ -38,6 +46,7 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       component: NotFoundView,
     },
+
 
   ],
 });
