@@ -26,11 +26,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+
 import { RouterLink } from 'vue-router';
 
-const username = ref("");
-const userpass = ref("");
+
 </script>
 
 <style lang="scss" scoped>
