@@ -2,11 +2,11 @@
   <main>
     <div class="wrapper">
       <!-- pop-up start-->
-
+      <RouterView />
       <div class="pop-exit" id="popExit">
         <ExitModal />
       </div>
-<RouterView />
+
       <div class="pop-new-card" id="popNewCard">
         <NewCardModal />
       </div>
@@ -17,6 +17,7 @@
 
       <!-- pop-up end-->
       <BaseHeader />
+
       <Transition name="show">
         <div v-if="loading">Идёт загрузка...</div>
         <TaskDesk v-else :loading="loading" />
