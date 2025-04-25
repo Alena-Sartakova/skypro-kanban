@@ -16,6 +16,7 @@
       </div> -->
 
       <!-- pop-up end-->
+      <RouterView />
       <BaseHeader />
 
       <Transition name="show">

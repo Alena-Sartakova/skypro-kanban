@@ -199,6 +199,8 @@ const task = computed(() => {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  z-index: 7;
 }
 .pop-browse__block {
   display: block;

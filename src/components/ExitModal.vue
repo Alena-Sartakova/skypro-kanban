@@ -46,6 +46,8 @@ function logout(e) {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  z-index: 5;
 }
 .pop-exit__block {
   display: block;
