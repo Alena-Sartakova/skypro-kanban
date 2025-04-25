@@ -1,5 +1,5 @@
 <template>
-  
+<!-- <div class="pop-exit" id="popExit"> -->
         <div class="pop-exit__container">
           <div class="pop-exit__block">
             <div class="pop-exit__ttl">
@@ -17,6 +17,7 @@
             </form>
           </div>
         </div>
+<!--       </div> -->
 </template>
 
 <script setup>

@@ -1,4 +1,5 @@
 <template>
+<!-- <RouterView /> -->
   <main class="main">
     <div class="container">
       <div class="main__block">
@@ -15,6 +16,7 @@
       </div>
     </div>
   </main>
+
 </template>
 
 <script setup>
