@@ -1,4 +1,5 @@
 <template>
+
   <main class="main">
     <div class="container">
       <div class="main__block">
@@ -15,12 +16,14 @@
       </div>
     </div>
   </main>
+
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import TaskColumn from './TaskColumn.vue'
 import { getTasks } from '@/mokcs/tasks'
+
 const tasks = ref([])
 const noStatusTask = computed(() => {
   return tasks.value.filter((el) => {
@@ -57,6 +60,7 @@ onMounted(() => {
 .main {
   width: 100%;
   background-color: #eaeef6;
+  z-index: 1;
 }
 .main__block {
   width: 100%;

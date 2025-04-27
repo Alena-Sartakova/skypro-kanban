@@ -3,7 +3,7 @@
           <div class="pop-new-card__block">
             <div class="pop-new-card__content">
               <h3 class="pop-new-card__ttl">Создание задачи</h3>
-              <a href="#" class="pop-new-card__close">&#10006;</a>
+              <RouterLink to="/" class="pop-new-card__close">&#10006;</RouterLink>
               <div class="pop-new-card__wrap">
                 <form class="pop-new-card__form form-new" id="formNewCard" action="#">
                   <div class="form-new__block">
@@ -152,6 +152,8 @@
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  z-index: 6;
 }
 .pop-new-card__block {
   display: block;

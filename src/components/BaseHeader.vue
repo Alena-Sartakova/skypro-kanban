@@ -1,4 +1,5 @@
 <template>
+ 
   <header class="header">
     <div class="container">
       <div class="header__block">
@@ -10,7 +11,7 @@
         </div>
         <nav class="header__nav">
           <button class="header__btn-main-new _hover01" id="btnMainNew">
-            <a href="#popNewCard">Создать новую задачу</a>
+           <RouterLink to="/new-card">Создать новую задачу</RouterLink>
           </button>
           <UserModal />
         </nav>
@@ -20,7 +21,9 @@
 </template>
 
 <script setup>
+
 import UserModal from './UserModal.vue'
+
 </script>
 
 <style lang="scss" scoped>
