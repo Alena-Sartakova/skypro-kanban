@@ -6,7 +6,7 @@
           <div class="pop-browse__top-block">
             <h3 class="pop-browse__ttl">{{ task.title }}</h3>
             <div class="categories__theme theme-top _orange _active-category">
-              <p class="_orange">{{ task.topic }}</p>
+              <p >{{ task.topic }}</p>
             </div>
           </div>
           <div class="pop-browse__status status">
@@ -150,13 +150,13 @@
 
           </div>
           <div class="pop-browse__btn-edit _hide">
-            <div class="btn-group">
+<!--             <div class="btn-group">
               <button class="btn-edit__edit _btn-bg _hover01"><a href="#">Сохранить</a></button>
               <button class="btn-edit__edit _btn-bor _hover03"><a href="#">Отменить</a></button>
               <button class="btn-edit__delete _btn-bor _hover03" id="btnDelete">
                 <a href="#">Удалить задачу</a>
               </button>
-            </div>
+            </div> -->
             <button class="btn-edit__close _btn-bg _hover01">
              <RouterLink to="/">Закрыть</RouterLink>
             </button>
@@ -186,6 +186,7 @@ const task = computed(() => {
    }
 });
 /* console.log(task.value) */
+
 </script>
 
 <style lang="scss" scoped>

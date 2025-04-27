@@ -11,7 +11,7 @@
               <div></div>
               <div></div>
               <div></div>
-              
+
             </div>
           </RouterLink>
         </div>
@@ -76,7 +76,6 @@ function TopicColor(topic) {
     return '_gray'
   }
 }
-console.log
 </script>
 
 <style lang="scss" scoped>
