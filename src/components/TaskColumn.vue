@@ -3,19 +3,20 @@
     <div class="column__title">
       <p>{{ title }}</p>
     </div>
-    <TaskCard v-for="task in tasks" :key="task.id" v-bind="task" />
-    
-  </div>
 
+      <TaskCard v-for="task in tasks" :key="task.id" v-bind="task" />
+
+  </div>
 </template>
 
 <script setup>
+
 import TaskCard from './TaskCard.vue'
 
 defineProps({
-  tasks: { type: Array, require: true},
-  title: {type: String, require: true},
-});
+  tasks: { type: Array, require: true },
+  title: { type: String, require: true },
+})
 
 </script>
 

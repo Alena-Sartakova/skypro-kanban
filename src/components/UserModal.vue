@@ -8,12 +8,15 @@
       <p>Темная тема</p>
       <input type="checkbox" class="checkbox" name="checkbox" />
     </div>
-    <button type="button" class="_hover03"><a href="#popExit">Выйти</a></button>
+    <button type="button" class="_hover03">
+      <RouterLink to="/exit" >Выйти</RouterLink>
+    </button>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 const isUserModalVisible = ref(true);
 
