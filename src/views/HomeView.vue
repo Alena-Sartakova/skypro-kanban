@@ -19,14 +19,12 @@
       <BaseHeader />
       <Transition name="show">
         <div v-if="loading">Идёт загрузка...</div>
-        <TaskDesk v-else :loading="loading" :tasks="tasks" :error="error"/>
+        <TaskDesk v-else :loading="loading" :tasks="tasks" :error="error" />
       </Transition>
-
     </div>
   </main>
 </template>
 <script setup>
-
 import BaseHeader from '@/components/BaseHeader.vue'
 import BrowseModal from '@/components/BrowseModal.vue'
 import ExitModal from '@/components/ExitModal.vue'
@@ -42,29 +40,34 @@ onMounted(() => {
   }, 3000)
 }); */
 
-const tasks = ref([]);
-const loading = ref(true);
-const error = ref('');
+const tasks = ref([])
+const loading = ref(true)
+const error = ref('')
 
 const getTasks = async () => {
-   try {
-      loading.value = false
-      const data = await fetchTasks({
+  try {
+    loading.value = false
+    const data = await fetchTasks({
       token: 'bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck',
       // Поскольку авторизация не реализована, передаем токен вручную
-   })
+    })
 
-   if (data) tasks.value = data
+    if (data) tasks.value = data
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    loading.value = false
+  }
+}
+onMounted(getTasks)
 
-   } catch (err) {
-      error.value = err.message
-
-   } finally {
-      loading.value = false
-   }
-};
-onMounted(getTasks);
-
+const socket = new WebSocket('ws://localhost:5173')
+socket.onopen = function (event) {
+  console.log('Соединение установлено')
+}
+socket.onerror = function (error) {
+  console.log('Ошибка подключения:', error)
+}
 </script>
 
 <style lang="scss" scoped>
