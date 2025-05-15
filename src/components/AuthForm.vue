@@ -8,10 +8,12 @@
 						<h2>Вход</h2>
 					</div>
 					<form class="modal__form-login" id="formLogIn" action="#">
+
 						<input class="modal__input" type="text" name="login" id="formlogin" placeholder="Эл. почта">
 						<input class="modal__input" type="password" name="password" id="formpassword" placeholder="Пароль">
 						<button class="modal__btn-enter _hover01" id="btnEnter" >
               <RouterLink to="/" :onClick="handleSignIn">Войти</RouterLink>
+
             </button>
 						<div class="modal__form-group">
 							<p>Нужно зарегистрироваться?</p>
@@ -27,8 +29,6 @@
 
 <script setup>
 import { RouterLink, useRouter } from 'vue-router';
-
-
 const router = useRouter() // Инициализация роутера
 
 async function handleSignIn(e) {
