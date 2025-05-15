@@ -1,4 +1,5 @@
 <template>
+<!-- <div class="pop-exit" id="popExit"> -->
         <div class="pop-exit__container">
           <div class="pop-exit__block">
             <div class="pop-exit__ttl">
@@ -7,7 +8,7 @@
             <form class="pop-exit__form" id="formExit" action="#">
               <div class="pop-exit__form-group">
                 <button class="pop-exit__exit-yes _hover01" id="exitYes">
-                  <RouterLink to="/sign-in">Да, выйти</RouterLink>
+                  <RouterLink to="/sign-in" @click="logout">Да, выйти</RouterLink>
                 </button>
                 <button class="pop-exit__exit-no _hover03" id="exitNo">
                  <RouterLink to='/'>Нет, остаться</RouterLink>
@@ -16,13 +17,24 @@
             </form>
           </div>
         </div>
+<!--       </div> -->
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function logout(e) {
+   e.preventDefault() // Блокируем стандартное действие ссылки
+   localStorage.removeItem('userInfo') // Удаляем информацию о пользователе
+   router.push('/sign-in') // Отправляем на экран входа
+}
 
 </script>
 
 <style lang="scss" scoped>
+
 
 .pop-exit__container {
   width: 100%;
@@ -34,6 +46,8 @@
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  z-index: 5;
 }
 .pop-exit__block {
   display: block;

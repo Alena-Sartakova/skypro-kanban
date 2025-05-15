@@ -8,10 +8,12 @@
 						<h2>Вход</h2>
 					</div>
 					<form class="modal__form-login" id="formLogIn" action="#">
-						<input  class="modal__input" type="text" name="login" id="formlogin" placeholder="Эл. почта">
-						<input  class="modal__input" type="password" name="password" id="formpassword" placeholder="Пароль">
-						<button class="modal__btn-enter _hover01" id="btnEnter">
-              <RouterLink to="/">Войти</RouterLink>
+
+						<input class="modal__input" type="text" name="login" id="formlogin" placeholder="Эл. почта">
+						<input class="modal__input" type="password" name="password" id="formpassword" placeholder="Пароль">
+						<button class="modal__btn-enter _hover01" id="btnEnter" >
+              <RouterLink to="/" :onClick="handleSignIn">Войти</RouterLink>
+
             </button>
 						<div class="modal__form-group">
 							<p>Нужно зарегистрироваться?</p>
@@ -26,9 +28,14 @@
 </template>
 
 <script setup>
+import { RouterLink, useRouter } from 'vue-router';
+const router = useRouter() // Инициализация роутера
 
-import { RouterLink } from 'vue-router';
-
+async function handleSignIn(e) {
+   e.preventDefault() // Предотвращаем перезагрузку страницы
+   localStorage.setItem('userInfo', 'true') // Сохраняем флаг авторизации
+   router.push('/') // Перенаправляем на главную страницу
+}
 
 </script>
 

@@ -1,12 +1,12 @@
 <template>
   <div>
-<AuthForm :onClick="handleSignIn"/>
+<AuthForm />
   </div>
 </template>
 
 <script setup>
 import AuthForm from '@/components/AuthForm.vue';
-import { useRouter } from 'vue-router';
+/* import { useRouter } from 'vue-router';
 
 const router = useRouter() // Инициализация роутера
 
@@ -15,7 +15,7 @@ async function handleSignIn(e) {
    localStorage.setItem('userInfo', 'true') // Сохраняем флаг авторизации
    router.push('/') // Перенаправляем на главную страницу
 }
-
+ */
 </script>
 
 <style lang="scss" scoped>

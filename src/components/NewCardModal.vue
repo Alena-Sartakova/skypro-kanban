@@ -152,6 +152,8 @@
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  z-index: 6;
 }
 .pop-new-card__block {
   display: block;

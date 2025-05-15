@@ -75,7 +75,6 @@ function TopicColor(topic) {
     return '_gray'
   }
 }
-console.log
 </script>
 
 <style lang="scss" scoped>
