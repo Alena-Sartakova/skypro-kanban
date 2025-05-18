@@ -10,6 +10,7 @@ export async function signIn(userData) {
          },
       });
    return data.data.user;
+
    } catch (error) {
       throw new Error(error.response.data.error);
    }

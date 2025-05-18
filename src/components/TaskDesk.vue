@@ -20,9 +20,9 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import TaskColumn from './TaskColumn.vue'
-import { getTasks } from '@/mokcs/tasks'
+
 
 const tasks = ref([])
 const noStatusTask = computed(() => {
@@ -50,9 +50,8 @@ const readyStatusTask = computed(() => {
     return el.status === 'Готово'
   })
 });
-onMounted(() => {
-  tasks.value = getTasks()
-});
+console.log(tasks)
+
 
 </script>
 

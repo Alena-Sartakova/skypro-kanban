@@ -1,21 +1,7 @@
 <template>
   <main>
     <div class="wrapper">
-      <!-- pop-up start-->
-<!--       <RouterView />
-      <div class="pop-exit" id="popExit">
-        <ExitModal />
-      </div>
 
-      <div class="pop-new-card" id="popNewCard">
-        <NewCardModal />
-      </div>
-
-      <div class="pop-browse" id="popBrowse">
-        <BrowseModal />
-      </div> -->
-
-      <!-- pop-up end-->
       <RouterView />
       <BaseHeader />
 
@@ -33,12 +19,6 @@ import TaskDesk from '@/components/TaskDesk.vue'
 import { fetchTasks } from '@/servises/api'
 import { onMounted, ref } from 'vue'
 
-/* const loading = ref(true)
-onMounted(() => {
-  setTimeout(() => {
-    loading.value = false
-  }, 3000)
-}); */
 
 const tasks = ref([])
 const loading = ref(true)
@@ -48,7 +28,7 @@ const getTasks = async () => {
   try {
     loading.value = false
     const data = await fetchTasks({
-      token: 'bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck',
+      token: "bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck",
       // Поскольку авторизация не реализована, передаем токен вручную
     })
 
@@ -61,13 +41,7 @@ const getTasks = async () => {
 }
 onMounted(getTasks)
 
-const socket = new WebSocket('ws://localhost:5173')
-socket.onopen = function (event) {
-  console.log('Соединение установлено')
-}
-socket.onerror = function (error) {
-  console.log('Ошибка подключения:', error)
-}
+console.log(tasks)
 </script>
 
 <style lang="scss" scoped>
