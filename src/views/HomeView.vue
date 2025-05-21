@@ -26,7 +26,7 @@ const error = ref('')
 
 const getTasks = async () => {
   try {
-    loading.value = false
+    loading.value = true
     const data = await fetchTasks({
       token: "bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck",
       // Поскольку авторизация не реализована, передаем токен вручную
@@ -35,13 +35,14 @@ const getTasks = async () => {
     if (data) tasks.value = data
   } catch (err) {
     error.value = err.message
+    console.error('Ошибка при получении задач:', error)
   } finally {
     loading.value = false
   }
 }
 onMounted(getTasks)
 
-console.log(tasks)
+console.log('Полученные задачи:', tasks.value)
 </script>
 
 <style lang="scss" scoped>
