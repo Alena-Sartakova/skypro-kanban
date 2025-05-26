@@ -42,7 +42,7 @@ const getTasks = async () => {
 }
 onMounted(getTasks)
 
-console.log('Полученные задачи:', tasks.value)
+
 </script>
 
 <style lang="scss" scoped>

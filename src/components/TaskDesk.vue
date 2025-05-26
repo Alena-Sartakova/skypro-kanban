@@ -28,30 +28,29 @@ const props = defineProps({
   loading: Boolean,
   erorr: String
 })
-console.log(props);
 
 const noStatusTask = computed(() => {
-  return props.tasks.value.filter((el) => {
+  return props.tasks.filter((el) => {
     return el.status === 'Без статуса'
   })
 });
 const doStatusTask = computed(() => {
-  return props.tasks.value.filter((el) => {
+  return props.tasks.filter((el) => {
     return el.status === 'Нужно сделать'
   })
 });
 const workStatusTask = computed(() => {
-  return props.tasks.value.filter((el) => {
+  return props.tasks.filter((el) => {
     return el.status === 'В работе'
   })
 });
 const testStatusTask = computed(() => {
-  return props.tasks.value.filter((el) => {
+  return props.tasks.filter((el) => {
     return el.status === 'Тестирование'
   })
 });
 const readyStatusTask = computed(() => {
-  return props.tasks.value.filter((el) => {
+  return props.tasks.filter((el) => {
     return el.status === 'Готово'
   })
 });

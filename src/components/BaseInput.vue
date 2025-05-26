@@ -7,6 +7,7 @@
       :id="id"
       :placeholder="placeholder"
       v-model="model"
+  
     />
   </div>
 </template>
@@ -43,4 +44,5 @@ const model = defineModel()
   outline: none;
   padding: 10px 8px;
 }
+
 </style>
