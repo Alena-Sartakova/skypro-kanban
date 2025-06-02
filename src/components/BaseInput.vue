@@ -7,7 +7,6 @@
       :id="id"
       :placeholder="placeholder"
       v-model="model"
-  
     />
   </div>
 </template>
@@ -18,7 +17,7 @@ defineProps({
     type: String,
     required: true,
   },
-name: {
+  name: {
     type: String,
     required: true,
   },
@@ -33,6 +32,7 @@ name: {
 })
 
 const model = defineModel()
+
 </script>
 
 <style lang="scss" scoped>
@@ -44,5 +44,4 @@ const model = defineModel()
   outline: none;
   padding: 10px 8px;
 }
-
 </style>

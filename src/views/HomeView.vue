@@ -6,7 +6,7 @@
       <BaseHeader />
 
       <Transition name="show">
-        <div v-if="loading">Идёт загрузка...</div>
+        <div class="loading" v-if="loading">Loading&#8230;</div>
         <TaskDesk v-else :loading="loading" :tasks="tasks" :error="error" />
       </Transition>
     </div>

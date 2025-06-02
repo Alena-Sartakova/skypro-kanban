@@ -7,9 +7,10 @@
             <div class="modal__ttl">
               <h2>{{ isSignUp ? 'Регистрация' : 'Вход' }}</h2>
             </div>
-            <form class="modal__form-login" id="formLogIn" action="#" @submit="handleSubmit">
+            <form class="modal__form-login" @submit.prevent="handleSubmit">
+              <!-- Поле имени только для регистрации -->
               <BaseInput
-                :class="[{ error: errors.name }]"
+                :class="{ error: errors.name }"
                 v-show="isSignUp"
                 name="name"
                 id="formname"
@@ -17,8 +18,9 @@
                 v-model="formData.name"
                 @focus="clearError('name')"
               />
+              <!-- Поле email -->
               <BaseInput
-                :class="[{ error: errors.login }]"
+                :class="{ error: errors.login }"
                 type="text"
                 name="login"
                 id="formlogin"
@@ -26,8 +28,9 @@
                 v-model="formData.login"
                 @focus="clearError('login')"
               />
+              <!-- Поле пароля -->
               <BaseInput
-                :class="[{ error: errors.password }]"
+                :class="{ error: errors.password }"
                 type="password"
                 name="password"
                 id="formpassword"
@@ -35,16 +38,26 @@
                 v-model="formData.password"
                 @focus="clearError('password')"
               />
-              <div class="error-message"></div>
-              <BaseButton type="secondary">
+              <p v-show="error" class="error-text">
+                {{ error }}
+              </p>
+              <!-- Кнопка отправки -->
+              <BaseButton
+                type="secondary"
+                :fullWidth="true"
+                class="button-enter"
+                :disabled="isFormInvalid"
+              >
                 {{ isSignUp ? 'Зарегистрироваться' : 'Войти' }}
               </BaseButton>
+
+              <!-- Ссылки для переключения между формами -->
               <div v-show="!isSignUp" class="modal__form-group">
                 <p>Нужно зарегистрироваться?</p>
                 <RouterLink to="/sign-up">Регистрируйтесь здесь</RouterLink>
               </div>
               <div v-show="isSignUp" class="modal__form-group">
-                <p>Уже есть аккаунт?<RouterLink to="/sign-in">Войдите здесь</RouterLink></p>
+                <p>Уже есть аккаунт? <RouterLink to="/sign-in">Войдите здесь</RouterLink></p>
               </div>
             </form>
           </div>
@@ -60,26 +73,23 @@ import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import BaseInput from './BaseInput.vue'
 import BaseButton from './BaseButton.vue'
-const router = useRouter() // Инициализация роутера
+const router = useRouter()
 
 const props = defineProps({
   isSignUp: Boolean,
 })
 
-// Создаём объект состояния, где хранится "name"
 const formData = ref({
   name: '',
   login: '',
   password: '',
-}) // formData теперь хранит поле имени
-
+})
 const errors = ref({
   name: false,
   login: false,
   password: false,
 })
 const error = ref('')
-
 function validateForm() {
   let isValid = true
   error.value = ''
@@ -87,7 +97,6 @@ function validateForm() {
   errors.value.name = false
   errors.value.login = false
   errors.value.password = false
-
   // Проверка имени (только для регистрации)
   if (props.isSignUp && !formData.value.name.trim()) {
     errors.value.name = true
@@ -107,17 +116,14 @@ function validateForm() {
   if (!isValid) {
     error.value = 'Пожалуйста, заполните все обязательные поля'
   }
-
   return isValid
 }
-// Функция, которая срабатывает при сабмите формы
 async function handleSubmit(event) {
   event.preventDefault()
-
+  // Валидация формы перед отправкой
   if (!validateForm()) {
     return
   }
-
   try {
     const data = props.isSignUp
       ? await signUp(formData.value)
@@ -128,8 +134,7 @@ async function handleSubmit(event) {
     }
   } catch (err) {
     error.value = err.message
-    console.error('Ошибка валидации:', err.message);
-      }
+  }
 }
 </script>
 
@@ -295,6 +300,36 @@ a {
 .modal__form-group a {
   text-decoration: underline;
 }
+.error {
+  border: 1px solid red;
+}
+
+.error-message {
+  color: red;
+  margin-top: 5px;
+}
+
+.BaseInput {
+  &::after {
+    content: attr(error-message);
+    display: block;
+    margin-top: 5px;
+    color: red;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &.error::after {
+    opacity: 1;
+  }
+  &.error {
+    border-color: red;
+    &:focus {
+      border-color: darkred;
+    }
+  }
+}
 
 @media screen and (max-width: 375px) {
   .modal {
@@ -311,16 +346,5 @@ a {
   .modal__btn-enter {
     height: 40px;
   }
-}
-.error-message {
-    display: none;
-    color: red;
-    margin-top: 5px;
-    font-size: 14px;
-
-    &.active {
-        display: block;
-        animation: fadeIn 0.3s;
-    }
 }
 </style>
