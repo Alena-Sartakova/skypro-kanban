@@ -75,11 +75,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, inject } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import BaseInput from './BaseInput.vue'
 import BaseButton from './BaseButton.vue'
 import { signIn, signUp } from '@/servises/auth'
+
+const { setUserInfo } = inject('auth')
 
 const router = useRouter()
 
@@ -161,7 +163,7 @@ async function handleSubmit(event) {
     console.log('Полученный ответ:', data)
 
     if (data) {
-      localStorage.setItem('userInfo', JSON.stringify(data))
+      setUserInfo(data)
       router.push('/')
     } else {
       error.value = 'Ошибка авторизации'
