@@ -9,10 +9,12 @@ export async function signIn(userData) {
             "Content-Type": "",
          },
       });
+
    return data.data.user;
 
    } catch (error) {
-      throw new Error(error.response.data.error);
+    console.error('Ошибка авторизации:', error);
+      throw new Error(error.response.data.error || 'Ошибка авторизации');
    }
 }
 
@@ -29,7 +31,7 @@ export async function signUp({ name, login, password }) {
    );
    return data.data.user;
    } catch (error) {
-      console.log(error);
-      throw new Error(error.response.data.error);
+      console.error('Ошибка регистрации:', error);
+      throw new Error(error.response.data.error || 'Ошибка регистрации');
    }
 }

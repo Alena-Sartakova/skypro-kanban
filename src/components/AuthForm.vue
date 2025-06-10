@@ -17,6 +17,8 @@
                 placeholder="Имя"
                 v-model="formData.name"
                 @focus="clearError('name')"
+                autocomplete="name"
+                spellcheck="false"
               />
               <!-- Поле email -->
               <BaseInput
@@ -24,9 +26,11 @@
                 type="text"
                 name="login"
                 id="formlogin"
-                placeholder="Эл. почта"
+                placeholder="Логин"
                 v-model="formData.login"
                 @focus="clearError('login')"
+                autocomplete="email"
+                spellcheck="false"
               />
               <!-- Поле пароля -->
               <BaseInput
@@ -37,6 +41,8 @@
                 placeholder="Пароль"
                 v-model="formData.password"
                 @focus="clearError('password')"
+                autocomplete="current-password"
+                spellcheck="false"
               />
               <p v-show="error" class="error-text">
                 {{ error }}
@@ -47,6 +53,7 @@
                 :fullWidth="true"
                 class="button-enter"
                 :disabled="isFormInvalid"
+                @click="handleSubmit"
               >
                 {{ isSignUp ? 'Зарегистрироваться' : 'Войти' }}
               </BaseButton>
@@ -68,11 +75,12 @@
 </template>
 
 <script setup>
-import { signIn, signUp } from '@/servises/auth'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import BaseInput from './BaseInput.vue'
 import BaseButton from './BaseButton.vue'
+import { signIn, signUp } from '@/servises/auth'
+
 const router = useRouter()
 
 const props = defineProps({
@@ -84,57 +92,88 @@ const formData = ref({
   login: '',
   password: '',
 })
+
 const errors = ref({
   name: false,
   login: false,
   password: false,
 })
+
 const error = ref('')
+
+// Вычисляемое свойство для проверки валидности формы
+const isFormInvalid = computed(() => {
+  return !validateForm()
+})
+
 function validateForm() {
   let isValid = true
   error.value = ''
-  // Сбросим все ошибки
+
+  // Сброс ошибок
   errors.value.name = false
   errors.value.login = false
   errors.value.password = false
+
   // Проверка имени (только для регистрации)
   if (props.isSignUp && !formData.value.name.trim()) {
     errors.value.name = true
     isValid = false
   }
-  // Проверка логина (эл. почты)
+
+  // Проверка логина
   if (!formData.value.login.trim()) {
     errors.value.login = true
     isValid = false
   }
+
   // Проверка пароля
   if (!formData.value.password.trim()) {
     errors.value.password = true
     isValid = false
   }
-  // Если есть ошибки, установим общее сообщение
+
+  // Если есть ошибки, устанавливаем сообщение
   if (!isValid) {
     error.value = 'Пожалуйста, заполните все обязательные поля'
   }
+
   return isValid
 }
+
 async function handleSubmit(event) {
   event.preventDefault()
-  // Валидация формы перед отправкой
+  console.log('Обработчик клика вызван')
+  console.log('Проверка формы...')
+
   if (!validateForm()) {
+    console.log('Форма содержит ошибки')
     return
   }
+
   try {
+    console.log('Попытка авторизации с данными:', formData.value)
+
     const data = props.isSignUp
       ? await signUp(formData.value)
       : await signIn({ login: formData.value.login, password: formData.value.password })
+
+    console.log('Полученный ответ:', data)
+
     if (data) {
       localStorage.setItem('userInfo', JSON.stringify(data))
       router.push('/')
+    } else {
+      error.value = 'Ошибка авторизации'
     }
   } catch (err) {
     error.value = err.message
+    console.error('Ошибка авторизации:', err)
   }
+}
+
+function clearError(field) {
+  errors.value[field] = false
 }
 </script>
 
