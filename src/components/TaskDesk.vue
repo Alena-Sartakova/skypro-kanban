@@ -20,39 +20,43 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed } from 'vue'
 import TaskColumn from './TaskColumn.vue'
-import { getTasks } from '@/mokcs/tasks'
 
-const tasks = ref([])
+const props = defineProps({
+  tasks: { type: Array, require: true },
+  loading: Boolean,
+  erorr: String
+})
+
 const noStatusTask = computed(() => {
-  return tasks.value.filter((el) => {
+  return props.tasks.filter((el) => {
     return el.status === 'Без статуса'
   })
 });
 const doStatusTask = computed(() => {
-  return tasks.value.filter((el) => {
+  return props.tasks.filter((el) => {
     return el.status === 'Нужно сделать'
   })
 });
 const workStatusTask = computed(() => {
-  return tasks.value.filter((el) => {
+  return props.tasks.filter((el) => {
     return el.status === 'В работе'
   })
 });
 const testStatusTask = computed(() => {
-  return tasks.value.filter((el) => {
+  return props.tasks.filter((el) => {
     return el.status === 'Тестирование'
   })
 });
 const readyStatusTask = computed(() => {
-  return tasks.value.filter((el) => {
+  return props.tasks.filter((el) => {
     return el.status === 'Готово'
   })
 });
-onMounted(() => {
-  tasks.value = getTasks()
-});
+
+
+
 
 </script>
 

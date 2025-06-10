@@ -5,7 +5,9 @@
 </template>
 
 <script setup>
+
 import RegForm from '@/components/RegForm.vue';
+
 
 
 </script>
