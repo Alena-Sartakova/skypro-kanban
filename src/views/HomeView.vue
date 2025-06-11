@@ -1,7 +1,6 @@
 <template>
   <main>
     <div class="wrapper">
-
       <RouterView />
       <BaseHeader />
 
@@ -10,39 +9,41 @@
         <TaskDesk v-else :loading="loading" :tasks="tasks" :error="error" />
       </Transition>
     </div>
-
   </main>
 </template>
 <script setup>
 import BaseHeader from '@/components/BaseHeader.vue'
 import TaskDesk from '@/components/TaskDesk.vue'
 import { fetchTasks } from '@/servises/api'
-import { onMounted, ref } from 'vue'
-
+import { inject, provide, ref, watch } from 'vue'
 
 const tasks = ref([])
 const loading = ref(true)
 const error = ref('')
+const { userInfo } = inject('auth')
+
+provide('tasksData', loading, error)
 
 const getTasks = async () => {
+  if (!userInfo.value?.token) {
+    error.value = 'Отсутствует токен авторизации'
+    return
+  }
   try {
     loading.value = true
     const data = await fetchTasks({
-      token: "bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck",
-      // Поскольку авторизация не реализована, передаем токен вручную
+      token: userInfo.value.token,
     })
-
     if (data) tasks.value = data
   } catch (err) {
-    error.value = err.message
+    error.value = err.message || String(err)
     console.error('Ошибка при получении задач:', error)
   } finally {
     loading.value = false
   }
 }
-onMounted(getTasks)
 
-
+watch(userInfo, getTasks, { immediate: true })
 </script>
 
 <style lang="scss" scoped>
@@ -68,7 +69,7 @@ onMounted(getTasks)
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 /* :not(:required) hides these rules from IE9 and below */
@@ -94,8 +95,24 @@ onMounted(getTasks)
   -o-animation: spinner 1500ms infinite linear;
   animation: spinner 1500ms infinite linear;
   border-radius: 0.5em;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
-  box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+  -webkit-box-shadow:
+    rgba(0, 0, 0, 0.75) 1.5em 0 0 0,
+    rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0,
+    rgba(0, 0, 0, 0.75) 0 1.5em 0 0,
+    rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0,
+    rgba(0, 0, 0, 0.5) -1.5em 0 0 0,
+    rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0,
+    rgba(0, 0, 0, 0.75) 0 -1.5em 0 0,
+    rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+  box-shadow:
+    rgba(0, 0, 0, 0.75) 1.5em 0 0 0,
+    rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0,
+    rgba(0, 0, 0, 0.75) 0 1.5em 0 0,
+    rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0,
+    rgba(0, 0, 0, 0.75) -1.5em 0 0 0,
+    rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0,
+    rgba(0, 0, 0, 0.75) 0 -1.5em 0 0,
+    rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
 }
 
 /* Animation */

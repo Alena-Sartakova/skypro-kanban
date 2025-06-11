@@ -24,36 +24,21 @@ import { computed } from 'vue'
 import TaskColumn from './TaskColumn.vue'
 
 const props = defineProps({
-  tasks: { type: Array, require: true },
+  tasks: { type: Array, required: true },
   loading: Boolean,
-  erorr: String
+  error: String
 })
 
-const noStatusTask = computed(() => {
-  return props.tasks.filter((el) => {
-    return el.status === 'Без статуса'
-  })
-});
-const doStatusTask = computed(() => {
-  return props.tasks.filter((el) => {
-    return el.status === 'Нужно сделать'
-  })
-});
-const workStatusTask = computed(() => {
-  return props.tasks.filter((el) => {
-    return el.status === 'В работе'
-  })
-});
-const testStatusTask = computed(() => {
-  return props.tasks.filter((el) => {
-    return el.status === 'Тестирование'
-  })
-});
-const readyStatusTask = computed(() => {
-  return props.tasks.filter((el) => {
-    return el.status === 'Готово'
-  })
-});
+const filterTasksByStatus = (status) =>
+  computed(() =>
+    props.tasks.filter(el => el?.status === status)
+  )
+
+const noStatusTask = filterTasksByStatus('Без статуса')
+const doStatusTask = filterTasksByStatus('Нужно сделать')
+const workStatusTask = filterTasksByStatus('В работе')
+const testStatusTask = filterTasksByStatus('Тестирование')
+const readyStatusTask = filterTasksByStatus('Готово')
 
 
 
