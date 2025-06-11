@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <RouterView />
-    
+
   </div>
 </template>
 
@@ -38,7 +38,8 @@ provide('auth', {
   user: userInfo,
   setUser: setUserInfo,
   removeUser: removeUserInfo,
-})
+  setUserInfo: setUserInfo,
+});
 
 // Выводим информацию для отладки
 console.log('Provided auth:', {

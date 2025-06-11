@@ -81,7 +81,8 @@ import BaseInput from './BaseInput.vue'
 import BaseButton from './BaseButton.vue'
 import { signIn, signUp } from '@/servises/auth'
 
-const { setUserInfo } = inject('auth')
+const auth = inject('auth') // Извлекаем весь объект auth
+
 
 const router = useRouter()
 
@@ -163,7 +164,7 @@ async function handleSubmit(event) {
     console.log('Полученный ответ:', data)
 
     if (data) {
-      setUserInfo(data)
+      auth.setUserInfo(data) // Используем auth.setUserInfo
       router.push('/')
     } else {
       error.value = 'Ошибка авторизации'
@@ -174,9 +175,7 @@ async function handleSubmit(event) {
   }
 }
 
-function clearError(field) {
-  errors.value[field] = false
-}
+
 </script>
 
 <style lang="scss">
