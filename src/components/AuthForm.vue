@@ -75,14 +75,14 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed, inject, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import BaseInput from './BaseInput.vue'
 import BaseButton from './BaseButton.vue'
 import { signIn, signUp } from '@/servises/auth'
 
 const auth = inject('auth') // Извлекаем весь объект auth
-
+const userInfo = auth?.user // Добавляем проверку на существование
 
 const router = useRouter()
 
@@ -175,6 +175,12 @@ async function handleSubmit(event) {
   }
 }
 
+// Добавляем watch с проверкой на существование
+if (userInfo) {
+  watch(userInfo, (newVal) => {
+    console.log('Пользователь изменился:', newVal)
+  }, { immediate: true })
+}
 
 </script>
 

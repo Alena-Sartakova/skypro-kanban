@@ -18,11 +18,11 @@ import { fetchTasks } from '@/servises/api'
 import { inject, provide, ref, watch } from 'vue'
 
 const tasks = ref([])
-const loading = ref(true)
+const loading = ref(false)
 const error = ref('')
 const { userInfo } = inject('auth')
 
-provide('tasksData', loading, error)
+provide('tasksData', { tasks, loading, error })
 
 const getTasks = async () => {
   if (!userInfo.value?.token) {
