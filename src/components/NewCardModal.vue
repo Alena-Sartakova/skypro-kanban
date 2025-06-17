@@ -27,6 +27,7 @@
                     ></textarea>
                   </div>
                 </form>
+                
                 <div class="pop-new-card__calendar calendar">
                   <p class="calendar__ttl subttl">Даты</p>
                   <div class="calendar__block">

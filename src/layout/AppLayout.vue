@@ -35,7 +35,7 @@ function removeUserInfo() {
 
 // Предоставляем данные для всего приложения
 provide('auth', {
-  user: userInfo,
+  userInfo: userInfo,
   setUser: setUserInfo,
   removeUser: removeUserInfo,
   setUserInfo: setUserInfo,
@@ -43,7 +43,7 @@ provide('auth', {
 
 // Выводим информацию для отладки
 console.log('Provided auth:', {
-  user: userInfo,
+  userInfo: userInfo,
   setUser: setUserInfo,
   removeUser: removeUserInfo,
 })

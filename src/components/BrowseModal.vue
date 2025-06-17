@@ -175,8 +175,8 @@ import { useRoute } from 'vue-router';
 const tasks = ref(getTasks());
 
 const route = useRoute();
-/* console.log(route.params.id);
-console.log(tasks.value) */
+console.log(route.params.id);
+console.log(tasks.value)
 const task = computed(() => {
    return tasks.value.find((w) => w.id === Number(route.params.id)) || {
     topic: "",
@@ -185,7 +185,7 @@ const task = computed(() => {
     status: "",
    }
 });
-/* console.log(task.value) */
+console.log(task.value)
 
 </script>
 

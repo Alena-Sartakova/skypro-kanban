@@ -29,6 +29,8 @@ const props = defineProps({
   error: String
 })
 
+console.log('Полученные задачи:', props.tasks)
+
 const filterTasksByStatus = (status) =>
   computed(() =>
     props.tasks.filter(el => el?.status === status)
