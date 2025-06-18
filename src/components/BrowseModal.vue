@@ -1,31 +1,31 @@
 <template>
-  <div >
+  <div>
     <div class="pop-browse__container">
       <div class="pop-browse__block">
         <div class="pop-browse__content">
           <div class="pop-browse__top-block">
             <h3 class="pop-browse__ttl">{{ task.title }}</h3>
-            <div class="categories__theme theme-top _orange _active-category">
-              <p >{{ task.topic }}</p>
+            <div :class="topicClass">
+              <p>{{ task.topic }}</p>
             </div>
           </div>
           <div class="pop-browse__status status">
-            <p class="status__p subttl">{{ task.status }}</p>
+            <p class="status__p subttl">Статус</p>
             <div class="status__themes">
-              <div class="status__theme _hide">
-                <p>Без статуса</p>
+              <div class="status__theme" :class="statusClass('Без статуса')">
+                <p :class="statusTextClass('Без статуса')">Без статуса</p>
               </div>
-              <div class="status__theme _gray">
-                <p class="_gray">Нужно сделать</p>
+              <div class="status__theme" :class="statusClass('Нужно сделать')">
+                <p :class="statusTextClass('Нужно сделать')">Нужно сделать</p>
               </div>
-              <div class="status__theme _hide">
-                <p>В работе</p>
+              <div class="status__theme" :class="statusClass('В работе')">
+                <p :class="statusTextClass('В работе')">В работе</p>
               </div>
-              <div class="status__theme _hide">
-                <p>Тестирование</p>
+              <div class="status__theme" :class="statusClass('Тестирование')">
+                <p :class="statusTextClass('Тестирование')">Тестирование</p>
               </div>
-              <div class="status__theme _hide">
-                <p>Готово</p>
+              <div class="status__theme" :class="statusClass('Готово')">
+                <p :class="statusTextClass('Готово')">Готово</p>
               </div>
             </div>
           </div>
@@ -42,6 +42,7 @@
                 ></textarea>
               </div>
             </form>
+
             <div class="pop-new-card__calendar calendar">
               <p class="calendar__ttl subttl">Даты</p>
               <div class="calendar__block">
@@ -132,6 +133,7 @@
               </div>
             </div>
           </div>
+
           <div class="theme-down__categories theme-down">
             <p class="categories__p subttl">Категория</p>
             <div class="categories__theme _orange _active-category">
@@ -147,18 +149,10 @@
                 <a href="#">Удалить задачу</a>
               </button>
             </div>
-
           </div>
           <div class="pop-browse__btn-edit _hide">
-<!--             <div class="btn-group">
-              <button class="btn-edit__edit _btn-bg _hover01"><a href="#">Сохранить</a></button>
-              <button class="btn-edit__edit _btn-bor _hover03"><a href="#">Отменить</a></button>
-              <button class="btn-edit__delete _btn-bor _hover03" id="btnDelete">
-                <a href="#">Удалить задачу</a>
-              </button>
-            </div> -->
             <button class="btn-edit__close _btn-bg _hover01">
-             <RouterLink to="/">Закрыть</RouterLink>
+              <RouterLink to="/">Закрыть</RouterLink>
             </button>
           </div>
         </div>
@@ -168,24 +162,53 @@
 </template>
 
 <script setup>
-import { getTasks } from '@/mokcs/tasks';
-import { computed, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, inject, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
-const tasks = ref(getTasks());
+const route = useRoute()
+const { tasks } = inject('tasksData')
+const { userInfo } = inject('auth')
 
-const route = useRoute();
-console.log(route.params.id);
-console.log(tasks.value)
+// Находим текущую задачу по ID из URL
 const task = computed(() => {
-   return tasks.value.find((w) => w.id === Number(route.params.id)) || {
-    topic: "",
-    title: "",
-    date: "",
-    status: "",
-   }
-});
-console.log(task.value)
+  const foundTask = tasks.value.find((task) => task._id === route.params.id)
+  console.log('Загруженная задача:', foundTask)
+  return foundTask
+})
+
+/* const isEditing = ref(false)
+const edittableCard = ref({
+  topic: '',
+  title: '',
+  date: '',
+  status: '',
+})
+ */
+const topicClass = computed(() => {
+  return TopicColor(task.value.topic)
+})
+
+function TopicColor(topic) {
+  if (topic === 'Web Design') {
+    return '_orange'
+  } else if (topic === 'Research') {
+    return '_green'
+  } else if (topic === 'Copywriting') {
+    return '_purple'
+  } else {
+    return '_gray'
+  }
+}
+
+// Определяем класс для каждого статуса
+function statusClass(status) {
+ return task.value.status === status ? '_gray' : '_hide';
+}
+
+// Определяем класс текста для каждого статуса
+function statusTextClass(status) {
+ return task.value.status === status ? '_gray' : '';
+}
 
 </script>
 
