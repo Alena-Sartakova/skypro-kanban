@@ -6,7 +6,7 @@
           <div :class="['card__theme']">
             <p :class="TopicColor(topic)">{{ topic }}</p>
           </div>
-          <RouterLink :to="`/browse-card/${id}`" target="_self">
+          <RouterLink :to="`/browse-card/${_id}`" target="_self">
             <div class="card__btn">
               <div></div>
               <div></div>
@@ -61,8 +61,9 @@ defineProps({
   title: { type: String, require: true },
   date: { type: String, require: true },
   status: { type: String, require: true },
-  id: { type: Number },
+  _id: { type: String, required: true },
 })
+
 
 function TopicColor(topic) {
   if (topic === 'Web Design') {
