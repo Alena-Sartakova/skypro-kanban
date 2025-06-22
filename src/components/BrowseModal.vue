@@ -3,13 +3,19 @@
     <div class="pop-browse__container">
       <div class="pop-browse__block">
         <div class="pop-browse__content">
+          <!-- Заголовок и тема -->
           <div class="pop-browse__top-block">
-            <h3 class="pop-browse__ttl">{{ task.title }}</h3>
+            <h3 class="pop-browse__ttl">
+              <input v-if="isEditing" type="text" v-model="editedTask.title" class="edit-title" />
+              <span v-else>{{ task.title }}</span>
+            </h3>
             <div :class="topicClass">
               <p>{{ task.topic }}</p>
             </div>
           </div>
-          <div class="pop-browse__status status">
+
+          <!-- Статус задачи в просмотре -->
+          <div v-if="!isEditing" class="pop-browse__status status">
             <p class="status__p subttl">Статус</p>
             <div class="status__themes">
               <div class="status__theme" :class="statusClass('Без статуса')">
@@ -29,20 +35,43 @@
               </div>
             </div>
           </div>
+
+          <!-- Статус задачи в редактировании -->
+          <div v-if="isEditing" class="pop-browse__status status">
+            <p class="status__p subttl">Статус</p>
+            <div class="status__themes">
+              <div
+                v-for="status in statusOptions"
+                :key="status"
+                class="status__theme"
+                :class="{
+                  _blue: editedTask.status === status,
+                  _editable: isEditing,
+                  _selected: editedTask.status === status,
+                  'bg-94a6be': editedTask.status === status,
+                }"
+                @click="handleStatusChange(status)"
+              >
+                <p>{{ status }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Описание задачи -->
           <div class="pop-browse__wrap">
-            <form class="pop-browse__form form-browse" id="formBrowseCard" action="#">
+            <form class="pop-browse__form form-browse">
               <div class="form-browse__block">
-                <label for="textArea01" class="subttl">Описание задачи</label>
+                <label class="subttl">Описание задачи</label>
                 <textarea
                   class="form-browse__area"
-                  name="text"
-                  id="textArea01"
-                  readonly
-                  placeholder="Введите описание задачи..."
+                  :readonly="!isEditing"
+                  v-model="editedTask.description"
+                  placeholder="Введите описание..."
                 ></textarea>
               </div>
             </form>
 
+            <!-- Даты  -->
             <div class="pop-new-card__calendar calendar">
               <p class="calendar__ttl subttl">Даты</p>
               <div class="calendar__block">
@@ -133,28 +162,28 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="theme-down__categories theme-down">
-            <p class="categories__p subttl">Категория</p>
-            <div class="categories__theme _orange _active-category">
-              <p class="_orange">Web Design</p>
+        <!-- Панель управления -->
+        <div class="pop-browse__btn-edit">
+          <div class="btn-group">
+            <button v-if="!isEditing" class="btn-edit _btn-bor _hover03" @click="startEditing">
+              Редактировать задачу
+            </button>
+
+            <div v-else class="edit-controls">
+              <button class="btn-save _btn-bg _hover01" @click="saveChanges">Сохранить</button>
+              <button class="btn-cancel _btn-bg _hover01" @click="cancelEditing">Отменить</button>
             </div>
-          </div>
-          <div class="pop-browse__btn-browse">
-            <div class="btn-group">
-              <button class="btn-browse__edit _btn-bor _hover03">
-                <a href="#">Редактировать задачу</a>
-              </button>
-              <button class="btn-browse__delete _btn-bor _hover03">
-                <a href="#">Удалить задачу</a>
-              </button>
-            </div>
-          </div>
-          <div class="pop-browse__btn-edit _hide">
-            <button class="btn-edit__close _btn-bg _hover01">
-              <RouterLink to="/">Закрыть</RouterLink>
+
+            <button class="btn-browse__delete _btn-bor _hover03">
+              <a href="#">Удалить задачу</a>
             </button>
           </div>
+
+          <button class="btn-edit__close _btn-bg _hover01">
+            <RouterLink to="/">Закрыть</RouterLink>
+          </button>
         </div>
       </div>
     </div>
@@ -166,8 +195,19 @@ import { computed, inject, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const { tasks } = inject('tasksData')
+const { tasks, updateTask } = inject('tasksData')
 const { userInfo } = inject('auth')
+
+const taskId = route.params.id
+const isEditing = ref(false)
+const originalTask = ref({})
+const editedTask = ref({
+  title: '',
+  description: '',
+  status: '',
+  topic: '',
+  deadline: '',
+})
 
 // Находим текущую задачу по ID из URL
 const task = computed(() => {
@@ -176,14 +216,6 @@ const task = computed(() => {
   return foundTask
 })
 
-/* const isEditing = ref(false)
-const edittableCard = ref({
-  topic: '',
-  title: '',
-  date: '',
-  status: '',
-})
- */
 const topicClass = computed(() => {
   return TopicColor(task.value.topic)
 })
@@ -202,14 +234,46 @@ function TopicColor(topic) {
 
 // Определяем класс для каждого статуса
 function statusClass(status) {
- return task.value.status === status ? '_gray' : '_hide';
+  return task.value.status === status ? '_gray' : '_hide'
 }
 
 // Определяем класс текста для каждого статуса
 function statusTextClass(status) {
- return task.value.status === status ? '_gray' : '';
+  return task.value.status === status ? '_gray' : ''
 }
 
+// Статусы
+const statusOptions = ['Без статуса', 'Нужно сделать', 'В работе', 'Тестирование', 'Готово']
+
+// Начало редактирования
+const startEditing = () => {
+  originalTask.value = { ...task.value }
+  editedTask.value = { ...task.value }
+  isEditing.value = true
+}
+
+// Изменение статуса
+const handleStatusChange = (newStatus) => {
+  if (isEditing.value) {
+    editedTask.value.status = newStatus
+  }
+}
+
+// Сохранение изменений
+const saveChanges = async () => {
+  try {
+    await updateTask(taskId, editedTask.value)
+    isEditing.value = false
+  } catch (error) {
+    console.error('Ошибка сохранения:', error)
+  }
+}
+
+// Отмена изменений
+const cancelEditing = () => {
+  Object.assign(editedTask.value, originalTask.value)
+  isEditing.value = false
+}
 </script>
 
 <style lang="scss" scoped>
@@ -290,5 +354,18 @@ function statusTextClass(status) {
 .pop-browse__btn-browse .btn-group button,
 .pop-browse__btn-edit .btn-group button {
   margin-right: 8px;
+}
+.status__theme {
+  &._selected {
+    background-color: #94a6be;
+    color: #fff;
+    p {
+      color: #fff;
+    }
+  }
+
+  &:hover {
+    background-color: rgba(94, 166, 190, 0.8);
+  }
 }
 </style>
