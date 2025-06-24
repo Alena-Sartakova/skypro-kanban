@@ -29,7 +29,7 @@ const props = defineProps({
   error: String
 })
 
-console.log('Полученные задачи:', props.tasks)
+/* console.log('Полученные задачи:', props.tasks) */
 
 const filterTasksByStatus = (status) =>
   computed(() =>

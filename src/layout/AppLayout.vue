@@ -41,12 +41,12 @@ provide('auth', {
   setUserInfo: setUserInfo,
 });
 
-// Выводим информацию для отладки
+/* // Выводим информацию для отладки
 console.log('Provided auth:', {
   userInfo: userInfo,
   setUser: setUserInfo,
   removeUser: removeUserInfo,
-})
+}) */
 
 // При монтировании компонента загружаем данные из localStorage
 onMounted(() => {
@@ -54,7 +54,7 @@ onMounted(() => {
     const data = localStorage.getItem('userInfo')
     if (data) {
       userInfo.value = JSON.parse(data)
-      console.log('Загруженные данные:', userInfo.value)
+      /* console.log('Загруженные данные:', userInfo.value) */
     }
   } catch (e) {
     userInfo.value = null
