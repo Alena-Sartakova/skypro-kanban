@@ -6,11 +6,12 @@
         <p v-if="!tasks.length">Задач нет</p>
         <div class="main__content">
 
-          <TaskColumn :tasks="noStatusTask" title='Без статуса'/>
-          <TaskColumn :tasks="doStatusTask" title='Нужно сделать'/>
-          <TaskColumn :tasks="workStatusTask" title='В работе'/>
-          <TaskColumn :tasks="testStatusTask" title='Тестирование'/>
-          <TaskColumn :tasks="readyStatusTask" title='Готово'/>
+          <TaskColumn
+            v-for="(tasks, status) in statusGroups"
+            :key="status"
+            :tasks="tasks"
+            :title="status"
+          />
 
         </div>
       </div>
@@ -29,21 +30,13 @@ const props = defineProps({
   error: String
 })
 
-/* console.log('Полученные задачи:', props.tasks) */
-
-const filterTasksByStatus = (status) =>
-  computed(() =>
-    props.tasks.filter(el => el?.status === status)
-  )
-
-const noStatusTask = filterTasksByStatus('Без статуса')
-const doStatusTask = filterTasksByStatus('Нужно сделать')
-const workStatusTask = filterTasksByStatus('В работе')
-const testStatusTask = filterTasksByStatus('Тестирование')
-const readyStatusTask = filterTasksByStatus('Готово')
-
-
-
+const statusGroups = computed(() => ({
+  'Без статуса': props.tasks.filter(el => el?.status === 'Без статуса'),
+  'Нужно сделать': props.tasks.filter(el => el?.status === 'Нужно сделать'),
+  'В работе': props.tasks.filter(el => el?.status === 'В работе'),
+  'Тестирование': props.tasks.filter(el => el?.status === 'Тестирование'),
+  'Готово': props.tasks.filter(el => el?.status === 'Готово')
+}))
 
 </script>
 

@@ -5,70 +5,179 @@
         <h3 class="pop-new-card__ttl">Создание задачи</h3>
         <RouterLink to="/" class="pop-new-card__close">&#10006;</RouterLink>
         <div class="pop-new-card__wrap">
-          <form class="pop-new-card__form form-new" id="formNewCard" action="#">
+          <form class="pop-new-card__form form-new" @submit.prevent="handleSubmit">
+            <!-- Поле названия -->
             <div class="form-new__block">
               <label for="formTitle" class="subttl">Название задачи</label>
               <input
+                id="formTitle"
+                v-model.trim="formData.title"
                 class="form-new__input"
                 type="text"
-                name="name"
-                id="formTitle"
                 placeholder="Введите название задачи..."
-                autofocus
+                maxlength="50"
+                @input="validateTitle"
               />
+              <div class="form-new__counter">
+                <span v-if="titleError" class="error-message">{{ titleError }}</span>
+                <span>{{ formData.title.length }}/50</span>
+              </div>
             </div>
+
+            <!-- Поле описания -->
             <div class="form-new__block">
               <label for="textArea" class="subttl">Описание задачи</label>
               <textarea
-                class="form-new__area"
-                name="text"
                 id="textArea"
+                v-model.trim="formData.description"
+                class="form-new__area"
                 placeholder="Введите описание задачи..."
+                maxlength="500"
+                @input="validateDescription"
               ></textarea>
+              <div class="form-new__counter">{{ formData.description.length }}/500</div>
             </div>
-          </form>
 
-          <CalendarComponent />
-        </div>
+            <!-- Календарь и категории -->
+            <CalendarComponent @date-selected="handleDateSelect" />
 
-        <div class="pop-new-card__categories categories">
-          <p class="categories__p subttl">Категория</p>
-          <div class="categories__themes">
-            <div
-              v-for="category in categories"
-              :key="category.id"
-              class="categories__theme"
-              :class="[
-                `_${category.color}`,
-                { '_active-category': selectedCategory === category.id },
-              ]"
-              @click="selectCategory(category.id)"
+            <div class="pop-new-card__categories categories">
+              <p class="categories__p subttl">Категория</p>
+              <div class="categories__themes">
+                <div
+                  v-for="category in categories"
+                  :key="category.id"
+                  class="categories__theme"
+                  :class="[
+                    `_${category.color}`,
+                    { '_active-category': selectedCategory === category.id },
+                  ]"
+                  @click="selectCategory(category.id)"
+                >
+                  <p :class="`_${category.color}`">{{ category.name }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Кнопка отправки -->
+            <button
+              type="submit"
+              class="form-new__create _hover01"
+              :disabled="!isFormValid || isSubmitting"
             >
-              <p :class="`_${category.color}`">{{ category.name }}</p>
-            </div>
-          </div>
+              {{ isSubmitting ? 'Создание...' : 'Создать задачу' }}
+            </button>
+          </form>
         </div>
-
-        <button class="form-new__create _hover01" id="btnCreate">Создать задачу</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, inject } from 'vue'
 import CalendarComponent from './CalendarComponent.vue'
+import { postTask } from '../servises/api'
+import dayjs from 'dayjs'
+import utc from 'dayjs-plugin-utc'
+import router from '../router'
 
+
+dayjs.extend(utc)
+
+// Получение токена
+const { userInfo } = inject('auth')
+
+// Обработчики событий
+const handleDateSelect = (date) => {
+  formData.value.dueDate = dayjs(date)
+}
+
+const selectCategory = (categoryId) => {
+  selectedCategory.value = categoryId
+}
+
+const token = computed(() => {
+  const t = userInfo.value?.token
+  console.log('Auth Текущий токен:', t ? '****' + t.slice(-4) : 'отсутствует')
+  return t
+})
+
+// Состояния компонента
+const formData = ref({
+  title: '',
+  description: '',
+  dueDate: null,
+})
+const titleError = ref('')
+const isSubmitting = ref(false)
+const selectedCategory = ref(null)
+
+// Категории
 const categories = ref([
   { id: 1, name: 'Web Design', color: 'orange' },
   { id: 2, name: 'Research', color: 'green' },
   { id: 3, name: 'Copywriting', color: 'purple' },
 ])
 
-const selectedCategory = ref(null)
+// Валидации
+const validateTitle = () => {
+  if (formData.value.title.length > 50) {
+    formData.value.title = formData.value.title.slice(0, 50)
+  }
+  titleError.value =
+    formData.value.title.trim().length < 3 ? 'Название должно быть не короче 3 символов' : ''
+}
 
-const selectCategory = (categoryId) => {
-  selectedCategory.value = categoryId
+const validateDescription = () => {
+  if (formData.value.description.length > 500) {
+    formData.value.description = formData.value.description.slice(0, 500)
+  }
+}
+
+// Проверка валидности формы
+const isFormValid = computed(() => {
+  return formData.value.title.trim().length >= 3 && selectedCategory.value !== null
+})
+
+async function handleSubmit() {
+  try {
+    if (!isFormValid.value) return
+    if (!token.value) return
+
+    isSubmitting.value = true
+    const requestData = {
+      title: formData.value.title.trim(),
+      topic: categories.value.find((c) => c.id === selectedCategory.value)?.name || 'Без категории',
+      status: 'Без статуса',
+      description: formData.value.description.trim(),
+      date: formData.value.dueDate ? dayjs.utc(formData.value.dueDate).toISOString() : null,
+    }
+
+    const response = await postTask({ token: token.value, task: requestData })
+
+    if (response && response.status === 201) {
+      console.log('Сервер ответил:', response)
+      formData.value = { title: '', description: '', dueDate: null }
+      selectedCategory.value = null
+    }
+    // Проверка структуры ответа
+    if (Array.isArray(response.data)) {
+      console.warn('Сервер вернул массив вместо объекта')
+      return
+    } else {
+      console.error('Ошибка сервера:', response.status, response.data)
+    }
+  } catch (error) {
+    console.error('Ошибка при отправке:', error.message)
+    if (error.response) {
+      console.error('HTTP Status:', error.response.status)
+      console.error('Данные ответа:', error.response.data)
+    }
+  } finally {
+    isSubmitting.value = false
+    router.push('/')
+  }
 }
 </script>
 
@@ -222,5 +331,28 @@ const selectCategory = (categoryId) => {
   &._purple {
     color: #9a48f1;
   }
+}
+
+.form-new__counter {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 12px;
+}
+
+.form-new__input:invalid,
+.form-new__area:invalid {
+  border-color: #ff4444;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>
