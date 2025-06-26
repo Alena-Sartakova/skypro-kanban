@@ -92,8 +92,12 @@
             <div v-if="errorMessage" class="error-message">
               <p>{{ errorMessage }}</p>
             </div>
-            <button class="btn-browse__delete _btn-bor _hover03">
-              <a href="#">Удалить задачу</a>
+            <button
+              class="btn-browse__delete _btn-bor _hover03"
+              @click="handleDelete"
+              :disabled="isDeleting"
+            >
+              {{ isDeleting ? 'Удаление...' : 'Удалить задачу' }}
             </button>
           </div>
 
@@ -109,7 +113,7 @@
 <script setup>
 import { computed, inject, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { editTask } from '../servises/api'
+import { deleteTask, editTask } from '../servises/api'
 import router from '../router'
 import CalendarComponent from './CalendarComponent.vue'
 
@@ -125,6 +129,7 @@ const editedTask = ref({
   status: '',
   topic: '',
 })
+const isDeleting = ref(false)
 const errorMessage = ref('')
 
 // Находим текущую задачу по ID из URL
@@ -218,6 +223,41 @@ const cancelEditing = () => {
   Object.assign(editedTask.value, originalTask.value)
   isEditing.value = false
 }
+
+//Функция удаления
+
+const handleDelete = async () => {
+  try {
+    if (!confirm('Вы точно хотите удалить задачу?')) return
+
+const currentToken = userInfo.value?.token || localStorage.getItem('token');
+    if (!currentToken) {
+      console.error('Токен отсутствует в момент удаления');
+      router.push('/login');
+      return;
+    }
+
+    // Вызов API с актуальным токеном
+    await deleteTask({
+      token: currentToken, // Используем свежее значение
+      id: route.params.id
+    })
+
+  } catch (error) {
+    console.error('Ошибка удаления:', {
+      status: error.response?.status,
+      message: error.message,
+      response: error.response?.data
+    })
+
+    // Обработка ошибки авторизации
+    if (error.response?.status === 401) {
+      console.error('Требуется повторная авторизация')
+      router.push('/login')
+    }
+  }
+}
+
 </script>
 
 <style lang="scss" scoped>
