@@ -73,7 +73,13 @@
             </form>
 
             <!-- Даты -->
-            <CalendarComponent />
+            <div v-if="task">
+              <CalendarComponent
+                :date="isEditing ? editedDate : task.date"
+                :readonly="calendarReadonly"
+                @update:date="(val) => (editedDate = val)"
+              />
+            </div>
           </div>
         </div>
 
@@ -85,7 +91,16 @@
             </button>
 
             <div v-else class="edit-controls">
-              <button class="btn-save _btn-bg _hover01" @click="saveChanges">Сохранить</button>
+              <button
+                class="btn-save _btn-bg _hover01"
+                @click="saveChanges"
+                :disabled="!isFormValid || isSubmitting"
+              >
+                <template v-if="isSubmitting">
+                  <span class="loader-small"></span> Сохранение...
+                </template>
+                <template v-else>Сохранить</template>
+              </button>
               <button class="btn-cancel _btn-bg _hover01" @click="cancelEditing">Отменить</button>
             </div>
             <!-- Отображение сообщения об ошибке -->
@@ -111,7 +126,7 @@
 </template>
 
 <script setup>
-import { computed, inject, ref } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { deleteTask, editTask, fetchTasks } from '../servises/api'
 import router from '../router'
@@ -120,8 +135,11 @@ import CalendarComponent from './CalendarComponent.vue'
 const route = useRoute()
 const { tasks } = inject('tasksData')
 const { userInfo } = inject('auth')
+
+const isSubmitting = ref(false)
 const isModalOpen = ref(true)
 const isEditing = ref(false)
+const editedDate = ref(null)
 const originalTask = ref({})
 const editedTask = ref({
   title: '',
@@ -132,6 +150,11 @@ const editedTask = ref({
 const isDeleting = ref(false)
 const errorMessage = ref('')
 
+const closeModal = () => {
+  isModalOpen.value = false
+  router.push('/')
+}
+
 // Находим текущую задачу по ID из URL
 const task = computed(() => {
   const foundTask = tasks.value.find((task) => task._id === route.params.id) || {
@@ -139,6 +162,7 @@ const task = computed(() => {
     description: '',
     status: '',
     topic: '',
+    date: new Date().toISOString(),
   }
   /*  console.log('Загруженная задача:', foundTask) */
   return foundTask
@@ -173,6 +197,18 @@ function statusTextClass(status) {
   return task.value.status === status ? '_gray' : ''
 }
 
+// Инициализация даты
+watch(
+  task,
+  (newTask) => {
+    if (newTask) editedDate.value = newTask.date
+  },
+  { immediate: true },
+)
+
+// Блокировка календаря
+const calendarReadonly = computed(() => !isEditing.value)
+
 // Начало редактирования
 const startEditing = () => {
   console.log(task.value)
@@ -193,31 +229,41 @@ const handleStatusChange = (newStatus) => {
     editedTask.value.status = newStatus
   }
 }
-const closeModal = () => {
-  isModalOpen.value = false
-  router.push('/')
-}
+
+const isFormValid = computed(() => {
+  return editedTask.value.title.trim().length >= 3 && editedTask.value.status.trim() !== ''
+})
 const saveChanges = async () => {
   try {
-    const updatedTask = await editTask({
+    // Валидация обязательных полей
+    if (!editedTask.value.title.trim() || !editedTask.value.status) {
+      errorMessage.value = 'Заполните название и выберите статус'
+      return
+    }
+
+    // Блокировка интерфейса
+    isSubmitting.value = true
+
+    // Отправка данных
+    await editTask({
       token: userInfo.value.token,
       id: route.params.id,
       task: editedTask.value,
     })
 
-    // Обновление списка задач
-    tasks.value = updatedTask
+    // Обновление списка задач через fetchTasks
+    tasks.value = await fetchTasks({ token: userInfo.value.token })
+
+    // Закрытие модалки
     closeModal()
   } catch (error) {
-    if (error.response) {
-      errorMessage.value = error.response.data.message || error.response.statusText
-    } else {
-      errorMessage.value = error.message || 'Произошла ошибка при сохранении'
-    }
+    // Обработка ошибок
+    errorMessage.value =
+      error.response?.data?.message || error.message || 'Не удалось сохранить изменения'
+  } finally {
+    isSubmitting.value = false
   }
 }
-
-
 
 // Отмена изменений
 const cancelEditing = () => {
@@ -240,13 +286,12 @@ const handleDelete = async () => {
 
     await deleteTask({
       token: currentToken,
-      id: route.params.id
+      id: route.params.id,
     })
 
     // Обновляем список задач и закрываем модалку
     tasks.value = await fetchTasks({ token: currentToken })
     closeModal()
-
   } catch (error) {
     errorMessage.value = error.response?.data?.error || error.message
 
@@ -255,8 +300,6 @@ const handleDelete = async () => {
     }
   }
 }
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -350,5 +393,15 @@ const handleDelete = async () => {
   &:hover {
     background-color: rgba(94, 166, 190, 0.8);
   }
+}
+.loader-small {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isModalOpen" class="pop-new-card__container">
+  <div v-if="isModalOpen" class="pop-new-card__container" >
     <div class="pop-new-card__block">
       <div class="pop-new-card__content">
         <h3 class="pop-new-card__ttl">Создание задачи</h3>
@@ -37,38 +37,37 @@
               ></textarea>
               <div class="form-new__counter">{{ formData.description.length }}/500</div>
             </div>
-
-            <!-- Календарь и категории -->
-            <CalendarComponent @date-selected="handleDateSelect" />
-
-            <div class="pop-new-card__categories categories">
-              <p class="categories__p subttl">Категория</p>
-              <div class="categories__themes">
-                <div
-                  v-for="category in categories"
-                  :key="category.id"
-                  class="categories__theme"
-                  :class="[
-                    `_${category.color}`,
-                    { '_active-category': selectedCategory === category.id },
-                  ]"
-                  @click="selectCategory(category.id)"
-                >
-                  <p :class="`_${category.color}`">{{ category.name }}</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Кнопка отправки -->
-            <button
-              type="submit"
-              class="form-new__create _hover01"
-              :disabled="!isFormValid || isSubmitting"
-            >
-              {{ isSubmitting ? 'Создание...' : 'Создать задачу' }}
-            </button>
           </form>
+
+          <!-- Календарь и категории -->
+          <CalendarComponent @date-selected="handleDateSelect" />
         </div>
+
+        <div class="pop-new-card__categories categories">
+          <p class="categories__p subttl">Категория</p>
+          <div class="categories__themes">
+            <div
+              v-for="category in categories"
+              :key="category.id"
+              class="categories__theme"
+              :class="[
+                `_${category.color}`,
+                { '_active-category': selectedCategory === category.id },
+              ]"
+              @click="selectCategory(category.id)"
+            >
+              <p :class="`_${category.color}`">{{ category.name }}</p>
+            </div>
+          </div>
+        </div>
+        <!-- Кнопка отправки -->
+        <button
+          type="submit"
+          class="form-new__create _hover01"
+          :disabled="!isFormValid || isSubmitting"
+        >
+          {{ isSubmitting ? 'Создание...' : 'Создать задачу' }}
+        </button>
       </div>
     </div>
   </div>
@@ -175,14 +174,12 @@ async function handleSubmit() {
     if (response?.status === 201) {
       formData.value = { title: '', description: '', dueDate: null }
       selectedCategory.value = null
-
     }
     const freshTasks = await fetchTasks({
       token: token.value,
     })
     tasks.value = freshTasks
     closeModal()
-
   } catch (error) {
     if (error.response) {
       console.error('HTTP Status:', error.response.status)
@@ -248,7 +245,9 @@ async function handleSubmit() {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  gap: 30px;
 }
+
 .pop-new-card__form {
   max-width: 370px;
   width: 100%;
