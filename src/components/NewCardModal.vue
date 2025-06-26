@@ -137,35 +137,28 @@ const validateDescription = () => {
   }
 }
 
-// Проверка валидности формы
 const isFormValid = computed(() => {
   return formData.value.title.trim().length >= 3 && selectedCategory.value !== null
 })
 
 const closeModal = () => {
   isModalOpen.value = false
-  router.push('/') // или emit('close')
+  router.push('/')
 }
 
 async function handleSubmit() {
   try {
-    console.groupCollapsed('--- Отправка задачи ---')
-
-    // 2. Валидация формы
-    console.log('[1/7] Проверка валидности формы:', isFormValid.value)
     if (!isFormValid.value) {
       console.warn('Форма невалидна! Прерывание отправки')
       return
     }
 
-    // 3. Проверка токена
-    console.log('[2/7] Проверка токена:', token.value ? 'присутствует' : 'отсутствует')
     if (!token.value) {
       console.error('Токен авторизации отсутствует!')
       return
     }
 
-    // 4. Подготовка данных
+    // Подготовка данных
     const requestData = {
       title: formData.value.title.trim(),
       topic: categories.value.find((c) => c.id === selectedCategory.value)?.name || 'Без категории',
@@ -173,38 +166,24 @@ async function handleSubmit() {
       description: formData.value.description.trim(),
       date: formData.value.dueDate ? dayjs.utc(formData.value.dueDate).toISOString() : null,
     }
-    console.log('[3/7] Сформированные данные:', JSON.parse(JSON.stringify(requestData)))
 
-    // 5. Отправка запроса
-    console.log('[4/7] Отправка запроса...')
     const response = await postTask({
       token: token.value,
-      task: requestData
+      task: requestData,
     })
-    console.log('[5/7] Ответ сервера:', response)
 
-    // 6. Обработка ответа
     if (response?.status === 201) {
-      console.log('[6/7] Успешное создание задачи')
       formData.value = { title: '', description: '', dueDate: null }
       selectedCategory.value = null
-      router.push('/') // 7. Переносим навигацию сюда
-    } else {
-      console.warn('[6/7] Неожиданный статус ответа:', response.status)
+
     }
-        const freshTasks = await fetchTasks({
-      token: token.value
+    const freshTasks = await fetchTasks({
+      token: token.value,
     })
-     tasks.value = freshTasks
-     closeModal()
-     router.push('/')
+    tasks.value = freshTasks
+    closeModal()
 
   } catch (error) {
-    // 8. Детальная обработка ошибок
-    console.error('[7/7] Ошибка выполнения:')
-    console.error('Сообщение:', error.message)
-    console.error('Стек:', error.stack)
-
     if (error.response) {
       console.error('HTTP Status:', error.response.status)
       console.error('Response Data:', error.response.data)
@@ -212,15 +191,9 @@ async function handleSubmit() {
     } else if (error.request) {
       console.error('Request:', error.request)
     }
-
-    // 9. Показ ошибки пользователю
-    titleError.value = 'Ошибка сохранения: ' +
-      (error.response?.data?.error || error.message)
-
   } finally {
     console.groupEnd()
     isSubmitting.value = false
-
   }
 }
 </script>

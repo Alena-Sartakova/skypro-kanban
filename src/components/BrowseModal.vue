@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="pop-browse__container">
+    <div v-if="isModalOpen" class="pop-browse__container">
       <div class="pop-browse__block">
         <div class="pop-browse__content">
           <!-- Заголовок и тема -->
@@ -113,14 +113,14 @@
 <script setup>
 import { computed, inject, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { deleteTask, editTask } from '../servises/api'
+import { deleteTask, editTask, fetchTasks } from '../servises/api'
 import router from '../router'
 import CalendarComponent from './CalendarComponent.vue'
 
 const route = useRoute()
 const { tasks } = inject('tasksData')
 const { userInfo } = inject('auth')
-
+const isModalOpen = ref(true)
 const isEditing = ref(false)
 const originalTask = ref({})
 const editedTask = ref({
@@ -193,7 +193,10 @@ const handleStatusChange = (newStatus) => {
     editedTask.value.status = newStatus
   }
 }
-
+const closeModal = () => {
+  isModalOpen.value = false
+  router.push('/')
+}
 const saveChanges = async () => {
   try {
     const updatedTask = await editTask({
@@ -214,9 +217,7 @@ const saveChanges = async () => {
   }
 }
 
-const closeModal = () => {
-  router.push('/')
-}
+
 
 // Отмена изменений
 const cancelEditing = () => {
@@ -230,33 +231,31 @@ const handleDelete = async () => {
   try {
     if (!confirm('Вы точно хотите удалить задачу?')) return
 
-const currentToken = userInfo.value?.token || localStorage.getItem('token');
+    const currentToken = userInfo.value?.token
     if (!currentToken) {
-      console.error('Токен отсутствует в момент удаления');
-      router.push('/login');
-      return;
+      errorMessage.value = 'Требуется авторизация'
+      router.push('/login')
+      return
     }
 
-    // Вызов API с актуальным токеном
     await deleteTask({
-      token: currentToken, // Используем свежее значение
+      token: currentToken,
       id: route.params.id
     })
 
-  } catch (error) {
-    console.error('Ошибка удаления:', {
-      status: error.response?.status,
-      message: error.message,
-      response: error.response?.data
-    })
+    // Обновляем список задач и закрываем модалку
+    tasks.value = await fetchTasks({ token: currentToken })
+    closeModal()
 
-    // Обработка ошибки авторизации
+  } catch (error) {
+    errorMessage.value = error.response?.data?.error || error.message
+
     if (error.response?.status === 401) {
-      console.error('Требуется повторная авторизация')
       router.push('/login')
     }
   }
 }
+
 
 </script>
 
