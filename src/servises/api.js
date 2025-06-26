@@ -31,12 +31,16 @@ export async function postTask({ token, task }) {
     const { data } = await axios.post(API_URL, task, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json' // Исправлено
+        'Content-Type': '' // Явное указание Content-Type
       }
     })
-    return data.tasks
+    return data
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Ошибка создания задачи')
+    // Детализация ошибки
+    const serverMessage = error.response?.data?.error
+      || error.response?.data?.message
+      || 'Ошибка создания задачи'
+    throw new Error(serverMessage)
   }
 }
 
@@ -45,7 +49,7 @@ export async function editTask({ token, id, task }) {
     const { data } = await axios.put(`${API_URL}/${id}`, task, { // Исправлен URL
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        'Content-Type': ''
       }
     })
     return data.tasks

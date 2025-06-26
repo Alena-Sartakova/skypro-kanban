@@ -1,9 +1,9 @@
 <template>
-  <div class="pop-new-card__container">
+  <div v-if="isModalOpen" class="pop-new-card__container">
     <div class="pop-new-card__block">
       <div class="pop-new-card__content">
         <h3 class="pop-new-card__ttl">Создание задачи</h3>
-        <RouterLink to="/" class="pop-new-card__close">&#10006;</RouterLink>
+        <button @click="closeModal" class="close-btn">×</button>
         <div class="pop-new-card__wrap">
           <form class="pop-new-card__form form-new" @submit.prevent="handleSubmit">
             <!-- Поле названия -->
@@ -77,17 +77,19 @@
 <script setup>
 import { ref, computed, inject } from 'vue'
 import CalendarComponent from './CalendarComponent.vue'
-import { postTask } from '../servises/api'
+
 import dayjs from 'dayjs'
 import utc from 'dayjs-plugin-utc'
 import router from '../router'
+import { fetchTasks, postTask } from '../servises/api'
 
+const isModalOpen = ref(true)
 
 dayjs.extend(utc)
 
 // Получение токена
 const { userInfo } = inject('auth')
-
+const { tasks } = inject('tasksData')
 // Обработчики событий
 const handleDateSelect = (date) => {
   formData.value.dueDate = dayjs(date)
@@ -140,12 +142,30 @@ const isFormValid = computed(() => {
   return formData.value.title.trim().length >= 3 && selectedCategory.value !== null
 })
 
+const closeModal = () => {
+  isModalOpen.value = false
+  router.push('/') // или emit('close')
+}
+
 async function handleSubmit() {
   try {
-    if (!isFormValid.value) return
-    if (!token.value) return
+    console.groupCollapsed('--- Отправка задачи ---')
 
-    isSubmitting.value = true
+    // 2. Валидация формы
+    console.log('[1/7] Проверка валидности формы:', isFormValid.value)
+    if (!isFormValid.value) {
+      console.warn('Форма невалидна! Прерывание отправки')
+      return
+    }
+
+    // 3. Проверка токена
+    console.log('[2/7] Проверка токена:', token.value ? 'присутствует' : 'отсутствует')
+    if (!token.value) {
+      console.error('Токен авторизации отсутствует!')
+      return
+    }
+
+    // 4. Подготовка данных
     const requestData = {
       title: formData.value.title.trim(),
       topic: categories.value.find((c) => c.id === selectedCategory.value)?.name || 'Без категории',
@@ -153,30 +173,54 @@ async function handleSubmit() {
       description: formData.value.description.trim(),
       date: formData.value.dueDate ? dayjs.utc(formData.value.dueDate).toISOString() : null,
     }
+    console.log('[3/7] Сформированные данные:', JSON.parse(JSON.stringify(requestData)))
 
-    const response = await postTask({ token: token.value, task: requestData })
+    // 5. Отправка запроса
+    console.log('[4/7] Отправка запроса...')
+    const response = await postTask({
+      token: token.value,
+      task: requestData
+    })
+    console.log('[5/7] Ответ сервера:', response)
 
-    if (response && response.status === 201) {
-      console.log('Сервер ответил:', response)
+    // 6. Обработка ответа
+    if (response?.status === 201) {
+      console.log('[6/7] Успешное создание задачи')
       formData.value = { title: '', description: '', dueDate: null }
       selectedCategory.value = null
-    }
-    // Проверка структуры ответа
-    if (Array.isArray(response.data)) {
-      console.warn('Сервер вернул массив вместо объекта')
-      return
+      router.push('/') // 7. Переносим навигацию сюда
     } else {
-      console.error('Ошибка сервера:', response.status, response.data)
+      console.warn('[6/7] Неожиданный статус ответа:', response.status)
     }
+        const freshTasks = await fetchTasks({
+      token: token.value
+    })
+     tasks.value = freshTasks
+     closeModal()
+     router.push('/')
+
   } catch (error) {
-    console.error('Ошибка при отправке:', error.message)
+    // 8. Детальная обработка ошибок
+    console.error('[7/7] Ошибка выполнения:')
+    console.error('Сообщение:', error.message)
+    console.error('Стек:', error.stack)
+
     if (error.response) {
       console.error('HTTP Status:', error.response.status)
-      console.error('Данные ответа:', error.response.data)
+      console.error('Response Data:', error.response.data)
+      console.error('Headers:', error.response.headers)
+    } else if (error.request) {
+      console.error('Request:', error.request)
     }
+
+    // 9. Показ ошибки пользователю
+    titleError.value = 'Ошибка сохранения: ' +
+      (error.response?.data?.error || error.message)
+
   } finally {
+    console.groupEnd()
     isSubmitting.value = false
-    router.push('/')
+
   }
 }
 </script>
@@ -354,5 +398,19 @@ async function handleSubmit() {
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+
+  &:hover {
+    color: #333;
+  }
 }
 </style>
