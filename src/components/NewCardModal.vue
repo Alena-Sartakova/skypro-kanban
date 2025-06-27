@@ -1,144 +1,198 @@
 <template>
-        <div class="pop-new-card__container">
-          <div class="pop-new-card__block">
-            <div class="pop-new-card__content">
-              <h3 class="pop-new-card__ttl">Создание задачи</h3>
-              <RouterLink to="/" class="pop-new-card__close">&#10006;</RouterLink>
-              <div class="pop-new-card__wrap">
-                <form class="pop-new-card__form form-new" id="formNewCard" action="#">
-                  <div class="form-new__block">
-                    <label for="formTitle" class="subttl">Название задачи</label>
-                    <input
-                      class="form-new__input"
-                      type="text"
-                      name="name"
-                      id="formTitle"
-                      placeholder="Введите название задачи..."
-                      autofocus
-                    />
-                  </div>
-                  <div class="form-new__block">
-                    <label for="textArea" class="subttl">Описание задачи</label>
-                    <textarea
-                      class="form-new__area"
-                      name="text"
-                      id="textArea"
-                      placeholder="Введите описание задачи..."
-                    ></textarea>
-                  </div>
-                </form>
-                <div class="pop-new-card__calendar calendar">
-                  <p class="calendar__ttl subttl">Даты</p>
-                  <div class="calendar__block">
-                    <div class="calendar__nav">
-                      <div class="calendar__month">Сентябрь 2023</div>
-                      <div class="nav__actions">
-                        <div class="nav__action" data-action="prev">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="6"
-                            height="11"
-                            viewBox="0 0 6 11"
-                          >
-                            <path
-                              d="M5.72945 1.95273C6.09018 1.62041 6.09018 1.0833 5.72945 0.750969C5.36622 0.416344 4.7754 0.416344 4.41218 0.750969L0.528487 4.32883C-0.176162 4.97799 -0.176162 6.02201 0.528487 6.67117L4.41217 10.249C4.7754 10.5837 5.36622 10.5837 5.72945 10.249C6.09018 9.9167 6.09018 9.37959 5.72945 9.04727L1.87897 5.5L5.72945 1.95273Z"
-                            />
-                          </svg>
-                        </div>
-                        <div class="nav__action" data-action="next">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="6"
-                            height="11"
-                            viewBox="0 0 6 11"
-                          >
-                            <path
-                              d="M0.27055 9.04727C-0.0901833 9.37959 -0.0901832 9.9167 0.27055 10.249C0.633779 10.5837 1.2246 10.5837 1.58783 10.249L5.47151 6.67117C6.17616 6.02201 6.17616 4.97799 5.47151 4.32883L1.58782 0.75097C1.2246 0.416344 0.633778 0.416344 0.270549 0.75097C-0.0901831 1.0833 -0.090184 1.62041 0.270549 1.95273L4.12103 5.5L0.27055 9.04727Z"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="calendar__content">
-                      <div class="calendar__days-names">
-                        <div class="calendar__day-name">пн</div>
-                        <div class="calendar__day-name">вт</div>
-                        <div class="calendar__day-name">ср</div>
-                        <div class="calendar__day-name">чт</div>
-                        <div class="calendar__day-name">пт</div>
-                        <div class="calendar__day-name -weekend-">сб</div>
-                        <div class="calendar__day-name -weekend-">вс</div>
-                      </div>
-                      <div class="calendar__cells">
-                        <div class="calendar__cell _other-month">28</div>
-                        <div class="calendar__cell _other-month">29</div>
-                        <div class="calendar__cell _other-month">30</div>
-                        <div class="calendar__cell _cell-day">31</div>
-                        <div class="calendar__cell _cell-day">1</div>
-                        <div class="calendar__cell _cell-day _weekend">2</div>
-                        <div class="calendar__cell _cell-day _weekend">3</div>
-                        <div class="calendar__cell _cell-day">4</div>
-                        <div class="calendar__cell _cell-day">5</div>
-                        <div class="calendar__cell _cell-day">6</div>
-                        <div class="calendar__cell _cell-day">7</div>
-                        <div class="calendar__cell _cell-day _current">8</div>
-                        <div class="calendar__cell _cell-day _weekend">9</div>
-                        <div class="calendar__cell _cell-day _weekend">10</div>
-                        <div class="calendar__cell _cell-day">11</div>
-                        <div class="calendar__cell _cell-day">12</div>
-                        <div class="calendar__cell _cell-day">13</div>
-                        <div class="calendar__cell _cell-day">14</div>
-                        <div class="calendar__cell _cell-day">15</div>
-                        <div class="calendar__cell _cell-day _weekend">16</div>
-                        <div class="calendar__cell _cell-day _weekend">17</div>
-                        <div class="calendar__cell _cell-day">18</div>
-                        <div class="calendar__cell _cell-day">19</div>
-                        <div class="calendar__cell _cell-day">20</div>
-                        <div class="calendar__cell _cell-day">21</div>
-                        <div class="calendar__cell _cell-day">22</div>
-                        <div class="calendar__cell _cell-day _weekend">23</div>
-                        <div class="calendar__cell _cell-day _weekend">24</div>
-                        <div class="calendar__cell _cell-day">25</div>
-                        <div class="calendar__cell _cell-day">26</div>
-                        <div class="calendar__cell _cell-day">27</div>
-                        <div class="calendar__cell _cell-day">28</div>
-                        <div class="calendar__cell _cell-day">29</div>
-                        <div class="calendar__cell _cell-day _weekend">30</div>
-                        <div class="calendar__cell _other-month _weekend">1</div>
-                      </div>
-                    </div>
+  <div v-if="isModalOpen" class="pop-new-card__container" >
+    <div class="pop-new-card__block">
+      <div class="pop-new-card__content">
+        <h3 class="pop-new-card__ttl">Создание задачи</h3>
+        <button @click="closeModal" class="close-btn">×</button>
+        <div class="pop-new-card__wrap">
+          <form class="pop-new-card__form form-new" @submit.prevent="handleSubmit">
+            <!-- Поле названия -->
+            <div class="form-new__block">
+              <label for="formTitle" class="subttl">Название задачи</label>
+              <input
+                id="formTitle"
+                v-model.trim="formData.title"
+                class="form-new__input"
+                type="text"
+                placeholder="Введите название задачи..."
+                maxlength="50"
+                @input="validateTitle"
+              />
+              <div class="form-new__counter">
+                <span v-if="titleError" class="error-message">{{ titleError }}</span>
+                <span>{{ formData.title.length }}/50</span>
+              </div>
+            </div>
 
-                    <input type="hidden" id="datepick_value" value="08.09.2023" />
-                    <div class="calendar__period">
-                      <p class="calendar__p date-end">
-                        Выберите срок исполнения <span class="date-control"></span>.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="pop-new-card__categories categories">
-                <p class="categories__p subttl">Категория</p>
-                <div class="categories__themes">
-                  <div class="categories__theme _orange _active-category">
-                    <p class="_orange">Web Design</p>
-                  </div>
-                  <div class="categories__theme _green">
-                    <p class="_green">Research</p>
-                  </div>
-                  <div class="categories__theme _purple">
-                    <p class="_purple">Copywriting</p>
-                  </div>
-                </div>
-              </div>
-              <button class="form-new__create _hover01" id="btnCreate">Создать задачу</button>
+            <!-- Поле описания -->
+            <div class="form-new__block">
+              <label for="textArea" class="subttl">Описание задачи</label>
+              <textarea
+                id="textArea"
+                v-model.trim="formData.description"
+                class="form-new__area"
+                placeholder="Введите описание задачи..."
+                maxlength="500"
+                @input="validateDescription"
+              ></textarea>
+              <div class="form-new__counter">{{ formData.description.length }}/500</div>
+            </div>
+          </form>
+
+          <!-- Календарь и категории -->
+          <CalendarComponent @date-selected="handleDateSelect" />
+        </div>
+
+        <div class="pop-new-card__categories categories">
+          <p class="categories__p subttl">Категория</p>
+          <div class="categories__themes">
+            <div
+              v-for="category in categories"
+              :key="category.id"
+              class="categories__theme"
+              :class="[
+                `_${category.color}`,
+                { '_active-category': selectedCategory === category.id },
+              ]"
+              @click="selectCategory(category.id)"
+            >
+              <p :class="`_${category.color}`">{{ category.name }}</p>
             </div>
           </div>
         </div>
+        <!-- Кнопка отправки -->
+        <button
+          type="submit"
+          class="form-new__create _hover01"
+          :disabled="!isFormValid || isSubmitting"
+        >
+          {{ isSubmitting ? 'Создание...' : 'Создать задачу' }}
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
+import { ref, computed, inject } from 'vue'
+import CalendarComponent from './CalendarComponent.vue'
 
+import dayjs from 'dayjs'
+import utc from 'dayjs-plugin-utc'
+import router from '../router'
+import { fetchTasks, postTask } from '../servises/api'
+
+const isModalOpen = ref(true)
+
+dayjs.extend(utc)
+
+// Получение токена
+const { userInfo } = inject('auth')
+const { tasks } = inject('tasksData')
+// Обработчики событий
+const handleDateSelect = (date) => {
+  formData.value.dueDate = dayjs(date)
+}
+
+const selectCategory = (categoryId) => {
+  selectedCategory.value = categoryId
+}
+
+const token = computed(() => {
+  const t = userInfo.value?.token
+  console.log('Auth Текущий токен:', t ? '****' + t.slice(-4) : 'отсутствует')
+  return t
+})
+
+// Состояния компонента
+const formData = ref({
+  title: '',
+  description: '',
+  dueDate: null,
+})
+const titleError = ref('')
+const isSubmitting = ref(false)
+const selectedCategory = ref(null)
+
+// Категории
+const categories = ref([
+  { id: 1, name: 'Web Design', color: 'orange' },
+  { id: 2, name: 'Research', color: 'green' },
+  { id: 3, name: 'Copywriting', color: 'purple' },
+])
+
+// Валидации
+const validateTitle = () => {
+  if (formData.value.title.length > 50) {
+    formData.value.title = formData.value.title.slice(0, 50)
+  }
+  titleError.value =
+    formData.value.title.trim().length < 3 ? 'Название должно быть не короче 3 символов' : ''
+}
+
+const validateDescription = () => {
+  if (formData.value.description.length > 500) {
+    formData.value.description = formData.value.description.slice(0, 500)
+  }
+}
+
+const isFormValid = computed(() => {
+  return formData.value.title.trim().length >= 3 && selectedCategory.value !== null
+})
+
+const closeModal = () => {
+  isModalOpen.value = false
+  router.push('/')
+}
+
+async function handleSubmit() {
+  try {
+    if (!isFormValid.value) {
+      console.warn('Форма невалидна! Прерывание отправки')
+      return
+    }
+
+    if (!token.value) {
+      console.error('Токен авторизации отсутствует!')
+      return
+    }
+
+    // Подготовка данных
+    const requestData = {
+      title: formData.value.title.trim(),
+      topic: categories.value.find((c) => c.id === selectedCategory.value)?.name || 'Без категории',
+      status: 'Без статуса',
+      description: formData.value.description.trim(),
+      date: formData.value.dueDate ? dayjs.utc(formData.value.dueDate).toISOString() : null,
+    }
+
+    const response = await postTask({
+      token: token.value,
+      task: requestData,
+    })
+
+    if (response?.status === 201) {
+      formData.value = { title: '', description: '', dueDate: null }
+      selectedCategory.value = null
+    }
+    const freshTasks = await fetchTasks({
+      token: token.value,
+    })
+    tasks.value = freshTasks
+    closeModal()
+  } catch (error) {
+    if (error.response) {
+      console.error('HTTP Status:', error.response.status)
+      console.error('Response Data:', error.response.data)
+      console.error('Headers:', error.response.headers)
+    } else if (error.request) {
+      console.error('Request:', error.request)
+    }
+  } finally {
+    console.groupEnd()
+    isSubmitting.value = false
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -191,7 +245,9 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  gap: 30px;
 }
+
 .pop-new-card__form {
   max-width: 370px;
   width: 100%;
@@ -253,7 +309,80 @@
   float: right;
 }
 
+//Категории
 
+.categories__theme {
+  opacity: 0.5;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  position: relative;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
+  &._active-category {
+    opacity: 1;
+    transform: scale(1.05);
+  }
 
+  &:hover:not(._active-category) {
+    opacity: 0.75;
+    transform: translateY(-2px);
+  }
+
+  & p {
+    transition: inherit;
+    pointer-events: none;
+    text-align: center;
+  }
+
+  // Цветовые модификаторы
+  &._orange {
+    color: #ff6d00;
+  }
+  &._green {
+    color: #0ac10a;
+  }
+  &._purple {
+    color: #9a48f1;
+  }
+}
+
+.form-new__counter {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 12px;
+}
+
+.form-new__input:invalid,
+.form-new__area:invalid {
+  border-color: #ff4444;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+
+  &:hover {
+    color: #333;
+  }
+}
 </style>

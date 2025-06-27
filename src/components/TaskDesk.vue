@@ -6,11 +6,12 @@
         <p v-if="!tasks.length">Задач нет</p>
         <div class="main__content">
 
-          <TaskColumn :tasks="noStatusTask" title='Без статуса'/>
-          <TaskColumn :tasks="doStatusTask" title='Нужно сделать'/>
-          <TaskColumn :tasks="workStatusTask" title='В работе'/>
-          <TaskColumn :tasks="testStatusTask" title='Тестирование'/>
-          <TaskColumn :tasks="readyStatusTask" title='Готово'/>
+          <TaskColumn
+            v-for="(tasks, status) in statusGroups"
+            :key="status"
+            :tasks="tasks"
+            :title="status"
+          />
 
         </div>
       </div>
@@ -24,39 +25,18 @@ import { computed } from 'vue'
 import TaskColumn from './TaskColumn.vue'
 
 const props = defineProps({
-  tasks: { type: Array, require: true },
+  tasks: { type: Array, required: true },
   loading: Boolean,
-  erorr: String
+  error: String
 })
 
-const noStatusTask = computed(() => {
-  return props.tasks.filter((el) => {
-    return el.status === 'Без статуса'
-  })
-});
-const doStatusTask = computed(() => {
-  return props.tasks.filter((el) => {
-    return el.status === 'Нужно сделать'
-  })
-});
-const workStatusTask = computed(() => {
-  return props.tasks.filter((el) => {
-    return el.status === 'В работе'
-  })
-});
-const testStatusTask = computed(() => {
-  return props.tasks.filter((el) => {
-    return el.status === 'Тестирование'
-  })
-});
-const readyStatusTask = computed(() => {
-  return props.tasks.filter((el) => {
-    return el.status === 'Готово'
-  })
-});
-
-
-
+const statusGroups = computed(() => ({
+  'Без статуса': props.tasks.filter(el => el?.status === 'Без статуса'),
+  'Нужно сделать': props.tasks.filter(el => el?.status === 'Нужно сделать'),
+  'В работе': props.tasks.filter(el => el?.status === 'В работе'),
+  'Тестирование': props.tasks.filter(el => el?.status === 'Тестирование'),
+  'Готово': props.tasks.filter(el => el?.status === 'Готово')
+}))
 
 </script>
 
