@@ -7,13 +7,6 @@
 </template>
 
 <script setup>
-/* import router from '@/router';
-:onClick="handleSignIn"
-async function handleSignIn(e) {
-  e.preventDefault() // Предотвращаем перезагрузку страницы
-  localStorage.setItem('userInfo', 'true') // Сохраняем флаг авторизации
-  router.push('/') // Перенаправляем на главную страницу
-} */
 defineProps({
    type: String,
 })

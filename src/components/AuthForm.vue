@@ -29,7 +29,7 @@
                 placeholder="Логин"
                 v-model="formData.login"
                 @focus="clearError('login')"
-                autocomplete="email"
+                autocomplete="username"
                 spellcheck="false"
               />
               <!-- Поле пароля -->
@@ -146,46 +146,30 @@ function validateForm() {
 
 async function handleSubmit(event) {
   event.preventDefault()
-  console.log('Обработчик клика вызван')
-  console.log('Проверка формы...')
 
-  if (!validateForm()) {
-    console.log('Форма содержит ошибки')
-    return
-  }
+  const data = props.isSignUp
+    ? await signUp(formData.value)
+    : await signIn({
+        login: formData.value.login,
+        password: formData.value.password,
+      })
 
-  try {
-    console.log('Попытка авторизации с данными:', formData.value)
-
-    const data = props.isSignUp
-      ? await signUp(formData.value)
-      : await signIn({ login: formData.value.login, password: formData.value.password })
-
-    console.log('Полученный ответ:', data)
-
-    if (data) {
-      auth.setUserInfo(data) // Используем auth.setUserInfo
-      router.push('/')
-    } else {
-      error.value = 'Ошибка авторизации'
-    }
-  } catch (err) {
-    error.value = err.message
-    console.error('Ошибка авторизации:', err)
-  }
+  auth.setUserInfo(data)
+  router.push('/')
 }
-
 // Добавляем watch с проверкой на существование
 if (userInfo) {
-  watch(userInfo, (newVal) => {
-    console.log('Пользователь изменился:', newVal)
-  }, { immediate: true })
+  watch(
+    userInfo,
+    (newVal) => {
+      console.log('Пользователь изменился:', newVal)
+    },
+    { immediate: true },
+  )
 }
-
 </script>
 
 <style lang="scss">
-
 * {
   margin: 0;
   padding: 0;

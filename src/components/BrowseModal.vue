@@ -74,11 +74,7 @@
 
             <!-- Даты -->
             <div v-if="task">
-              <CalendarComponent
-                :date="isEditing ? editedDate : task.date"
-                :readonly="calendarReadonly"
-                @update:date="(val) => (editedDate = val)"
-              />
+              <CalendarComponent :date="task.date" :readonly="!isEditing" />
             </div>
           </div>
         </div>
@@ -131,6 +127,7 @@ import { useRoute } from 'vue-router'
 import { deleteTask, editTask, fetchTasks } from '../servises/api'
 import router from '../router'
 import CalendarComponent from './CalendarComponent.vue'
+import dayjs from 'dayjs'
 
 const route = useRoute()
 const { tasks } = inject('tasksData')
@@ -139,7 +136,7 @@ const { userInfo } = inject('auth')
 const isSubmitting = ref(false)
 const isModalOpen = ref(true)
 const isEditing = ref(false)
-const editedDate = ref(null)
+
 const originalTask = ref({})
 const editedTask = ref({
   title: '',
@@ -167,6 +164,18 @@ const task = computed(() => {
   /*  console.log('Загруженная задача:', foundTask) */
   return foundTask
 })
+watch(
+  task,
+  (newTask) => {
+    if (newTask) {
+      console.log(
+        'Срок исполнения:',
+        newTask.date ? dayjs(newTask.date).format('DD.MM.YYYY') : 'не указан',
+      )
+    }
+  },
+  { immediate: true, deep: true },
+)
 
 const topicClass = computed(() => {
   return TopicColor(task.value.topic)
@@ -196,18 +205,6 @@ function statusClass(status) {
 function statusTextClass(status) {
   return task.value.status === status ? '_gray' : ''
 }
-
-// Инициализация даты
-watch(
-  task,
-  (newTask) => {
-    if (newTask) editedDate.value = newTask.date
-  },
-  { immediate: true },
-)
-
-// Блокировка календаря
-const calendarReadonly = computed(() => !isEditing.value)
 
 // Начало редактирования
 const startEditing = () => {
