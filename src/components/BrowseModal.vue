@@ -122,12 +122,12 @@
 </template>
 
 <script setup>
-import { computed, inject, ref, watch } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { deleteTask, editTask, fetchTasks } from '../servises/api'
 import router from '../router'
 import CalendarComponent from './CalendarComponent.vue'
-import dayjs from 'dayjs'
+
 
 const route = useRoute()
 const { tasks } = inject('tasksData')
@@ -164,18 +164,7 @@ const task = computed(() => {
   /*  console.log('Загруженная задача:', foundTask) */
   return foundTask
 })
-watch(
-  task,
-  (newTask) => {
-    if (newTask) {
-      console.log(
-        'Срок исполнения:',
-        newTask.date ? dayjs(newTask.date).format('DD.MM.YYYY') : 'не указан',
-      )
-    }
-  },
-  { immediate: true, deep: true },
-)
+
 
 const topicClass = computed(() => {
   return TopicColor(task.value.topic)
@@ -234,7 +223,7 @@ const saveChanges = async () => {
   try {
     // Валидация обязательных полей
     if (!editedTask.value.title.trim() || !editedTask.value.status) {
-      errorMessage.value = 'Заполните название и выберите статус'
+      errorMessage.value = 'Заполните все поля, выберите статус и дату'
       return
     }
 
