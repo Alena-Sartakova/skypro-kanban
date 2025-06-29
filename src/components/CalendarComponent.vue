@@ -56,10 +56,9 @@
 
 <script setup>
 import dayjs from 'dayjs'
-import { computed, ref } from 'vue'
+import { computed, ref  } from 'vue'
 
 dayjs.locale('ru')
-
 const currentMonth = ref(dayjs())
 const selectedDate = ref(null)
 

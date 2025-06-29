@@ -74,7 +74,7 @@
 
             <!-- Даты -->
             <div v-if="task">
-              <CalendarComponent :date="task.date" :readonly="!isEditing" />
+              <CalendarComponent  :readonly="!isEditing" />
             </div>
           </div>
         </div>
@@ -164,7 +164,6 @@ const task = computed(() => {
   /*  console.log('Загруженная задача:', foundTask) */
   return foundTask
 })
-
 
 const topicClass = computed(() => {
   return TopicColor(task.value.topic)
@@ -286,6 +285,7 @@ const handleDelete = async () => {
     }
   }
 }
+
 </script>
 
 <style lang="scss" scoped>
