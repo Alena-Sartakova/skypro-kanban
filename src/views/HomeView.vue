@@ -6,6 +6,21 @@
 
       <Transition name="show">
         <div class="loading" v-if="loading">Loading&#8230;</div>
+
+        <div v-else-if="error" class="error-block">
+          <div class="error-content">
+            <h3 class="error-title">{{ errorTitle }}</h3>
+            <p class="error-description">{{ errorDescription }}</p>
+            <button
+              v-if="showRetry"
+              class="retry-button"
+              @click="retryFetch"
+            >
+              Повторить попытку
+            </button>
+          </div>
+        </div>
+
         <TaskDesk v-else :loading="loading" :tasks="tasks" :error="error" />
       </Transition>
     </div>
@@ -15,12 +30,38 @@
 import BaseHeader from '@/components/BaseHeader.vue'
 import TaskDesk from '@/components/TaskDesk.vue'
 import { fetchTasks } from '@/servises/api'
-import { inject, provide, ref, watch } from 'vue'
+import { computed, inject, provide, ref, watch } from 'vue'
 
 const tasks = ref([])
 const loading = ref(false)
 const error = ref('')
 const { userInfo } = inject('auth')
+
+// Определение типа ошибки
+const errorType = computed(() => {
+  if (!navigator.onLine) return 'offline'
+  if (error.value?.includes('401')) return 'auth'
+  return 'server'
+})
+
+// Сообщения для разных типов ошибок
+const errorTitle = computed(() => {
+  return {
+    offline: 'Отсутствует интернет-соединение',
+    auth: 'Ошибка авторизации',
+    server: 'Ошибка сервера'
+  }[errorType.value]
+})
+
+const errorDescription = computed(() => {
+  return {
+    offline: 'Проверьте подключение к интернету и попробуйте снова',
+    auth: 'Требуется повторная авторизация',
+    server: 'Сервер временно недоступен, попробуйте позже'
+  }[errorType.value]
+})
+
+const showRetry = computed(() => errorType.value !== 'auth')
 
 provide('tasksData', { tasks, loading, error })
 
@@ -30,7 +71,12 @@ const getTasks = async () => {
     return
   }
   try {
+        // Проверка интернета перед запросом
+    if (!navigator.onLine) {
+      throw new Error('offline')
+    }
     loading.value = true
+    error.value = null
     const data = await fetchTasks({
       token: userInfo.value.token,
     })

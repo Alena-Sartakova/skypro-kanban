@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isModalOpen" class="pop-new-card__container" >
+  <div v-if="isModalOpen" class="pop-new-card__container">
     <div class="pop-new-card__block">
       <div class="pop-new-card__content">
         <h3 class="pop-new-card__ttl">Создание задачи</h3>
@@ -65,6 +65,7 @@
           type="submit"
           class="form-new__create _hover01"
           :disabled="!isFormValid || isSubmitting"
+          @click.prevent="handleSubmit"
         >
           {{ isSubmitting ? 'Создание...' : 'Создать задачу' }}
         </button>
@@ -148,7 +149,7 @@ const closeModal = () => {
 async function handleSubmit() {
   try {
     if (!isFormValid.value) {
-      console.warn('Форма невалидна! Прерывание отправки')
+      console.error('Форма невалидна!')
       return
     }
 

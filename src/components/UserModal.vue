@@ -1,9 +1,9 @@
 <template>
-  <a href="#user-set-target" class="header__user _hover02"  @click="isUserModalVisible = !isUserModalVisible" >Ivan Ivanov</a>
+  <a href="#user-set-target" class="header__user _hover02"  @click="isUserModalVisible = !isUserModalVisible" >{{ userInfo?.name || 'Пользователь' }}</a>
   <div  class="header__pop-user-set pop-user-set" id="user-set-target" v-if="!isUserModalVisible">
     <!-- <a href="">x</a> -->
-    <p class="pop-user-set__name">Ivan Ivanov</p>
-    <p class="pop-user-set__mail">ivan.ivanov@gmail.com</p>
+    <p class="pop-user-set__name">{{ userInfo?.name || 'Имя не указано' }}</p>
+    <p class="pop-user-set__mail">{{ userInfo?.login || 'Логин не указан' }}</p>
     <div class="pop-user-set__theme">
       <p>Темная тема</p>
       <input type="checkbox" class="checkbox" name="checkbox" />
@@ -15,11 +15,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 
 const isUserModalVisible = ref(true);
-
+const { userInfo } = inject('auth');
 
 </script>
 <style lang="scss" scoped>

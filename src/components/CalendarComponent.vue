@@ -56,10 +56,9 @@
 
 <script setup>
 import dayjs from 'dayjs'
-import { computed, ref, watch } from 'vue'
+import { computed, ref  } from 'vue'
 
 dayjs.locale('ru')
-
 const currentMonth = ref(dayjs())
 const selectedDate = ref(null)
 
@@ -102,7 +101,7 @@ const nextMonth = () => {
 }
 // Форматирование даты
 const selectedDateFormatted = computed(() =>
-  selectedDate.value ? selectedDate.value.format('DD.MM.YYYY') : ''
+  selectedDate.value ? selectedDate.value.format('DD.MM.YYYY') : '',
 )
 
 // При выборе даты
@@ -113,15 +112,7 @@ const selectDate = (day) => {
   emit('date-selected', day.date)
 }
 
-// Следим за изменениями даты
-watch(selectedDate, (newDate) => {
-  if (newDate) {
-    console.log('Дата выбрана:', newDate.format('YYYY-MM-DD'))
-  }
-})
 const emit = defineEmits(['date-selected'])
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -151,6 +142,23 @@ const emit = defineEmits(['date-selected'])
 .date-control {
   font-weight: 600;
   margin-left: 5px;
+}
+.calendar--readonly {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.nav__action._disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.calendar__cell {
+  cursor: pointer;
+}
+
+.calendar--readonly .calendar__cell {
+  cursor: default;
 }
 
 @media (max-width: 768px) {

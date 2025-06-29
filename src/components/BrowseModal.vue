@@ -74,11 +74,7 @@
 
             <!-- Даты -->
             <div v-if="task">
-              <CalendarComponent
-                :date="isEditing ? editedDate : task.date"
-                :readonly="calendarReadonly"
-                @update:date="(val) => (editedDate = val)"
-              />
+              <CalendarComponent  :readonly="!isEditing" />
             </div>
           </div>
         </div>
@@ -126,11 +122,12 @@
 </template>
 
 <script setup>
-import { computed, inject, ref, watch } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { deleteTask, editTask, fetchTasks } from '../servises/api'
 import router from '../router'
 import CalendarComponent from './CalendarComponent.vue'
+
 
 const route = useRoute()
 const { tasks } = inject('tasksData')
@@ -139,7 +136,7 @@ const { userInfo } = inject('auth')
 const isSubmitting = ref(false)
 const isModalOpen = ref(true)
 const isEditing = ref(false)
-const editedDate = ref(null)
+
 const originalTask = ref({})
 const editedTask = ref({
   title: '',
@@ -197,18 +194,6 @@ function statusTextClass(status) {
   return task.value.status === status ? '_gray' : ''
 }
 
-// Инициализация даты
-watch(
-  task,
-  (newTask) => {
-    if (newTask) editedDate.value = newTask.date
-  },
-  { immediate: true },
-)
-
-// Блокировка календаря
-const calendarReadonly = computed(() => !isEditing.value)
-
 // Начало редактирования
 const startEditing = () => {
   console.log(task.value)
@@ -237,7 +222,7 @@ const saveChanges = async () => {
   try {
     // Валидация обязательных полей
     if (!editedTask.value.title.trim() || !editedTask.value.status) {
-      errorMessage.value = 'Заполните название и выберите статус'
+      errorMessage.value = 'Заполните все поля, выберите статус и дату'
       return
     }
 
@@ -300,6 +285,7 @@ const handleDelete = async () => {
     }
   }
 }
+
 </script>
 
 <style lang="scss" scoped>

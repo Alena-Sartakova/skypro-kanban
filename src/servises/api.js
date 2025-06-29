@@ -31,7 +31,7 @@ export async function postTask({ token, task }) {
     const { data } = await axios.post(API_URL, task, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': '' // Явное указание Content-Type
+        'Content-Type': '' 
       }
     })
     return data
