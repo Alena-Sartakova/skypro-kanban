@@ -10,7 +10,7 @@
             <form class="modal__form-login" @submit.prevent="handleSubmit">
               <!-- Поле имени только для регистрации -->
               <BaseInput
-                :class="{ error: errors.name }"
+                :class="{ error: submitted && errors.name }"
                 v-show="isSignUp"
                 name="name"
                 id="formname"
@@ -22,7 +22,7 @@
               />
               <!-- Поле email -->
               <BaseInput
-                :class="{ error: errors.login }"
+                :class="{ error: submitted && errors.login }"
                 type="text"
                 name="login"
                 id="formlogin"
@@ -34,7 +34,7 @@
               />
               <!-- Поле пароля -->
               <BaseInput
-                :class="{ error: errors.password }"
+                :class="{ error: submitted && errors.password }"
                 type="password"
                 name="password"
                 id="formpassword"
@@ -52,19 +52,27 @@
                 type="secondary"
                 :fullWidth="true"
                 class="button-enter"
-                :disabled="isFormInvalid"
+                :disabled="isLoading || isSuccess"
+                :class="{
+                  loading: isLoading,
+                  success: isSuccess,
+                  'error-state': error,
+                }"
                 @click="handleSubmit"
               >
-                {{ isSignUp ? 'Зарегистрироваться' : 'Войти' }}
+                {{ buttonText }}
               </BaseButton>
 
               <!-- Ссылки для переключения между формами -->
               <div v-show="!isSignUp" class="modal__form-group">
                 <p>Нужно зарегистрироваться?</p>
-                <RouterLink to="/sign-up">Регистрируйтесь здесь</RouterLink>
+                <a href="#" @click.prevent="toggleAuthMode">Регистрируйтесь здесь</a>
               </div>
               <div v-show="isSignUp" class="modal__form-group">
-                <p>Уже есть аккаунт? <RouterLink to="/sign-in">Войдите здесь</RouterLink></p>
+                <p>
+                  Уже есть аккаунт?
+                  <a href="#" @click.prevent="toggleAuthMode">Войдите здесь</a>
+                </p>
               </div>
             </form>
           </div>
@@ -75,97 +83,111 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, watch } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { ref, inject, computed } from 'vue'
 import BaseInput from './BaseInput.vue'
 import BaseButton from './BaseButton.vue'
 import { signIn, signUp } from '@/servises/auth'
 
-const auth = inject('auth') // Извлекаем весь объект auth
-const userInfo = auth?.user // Добавляем проверку на существование
+const auth = inject('auth')
 
-const router = useRouter()
-
-const props = defineProps({
-  isSignUp: Boolean,
-})
-
-const formData = ref({
-  name: '',
-  login: '',
-  password: '',
-})
-
-const errors = ref({
-  name: false,
-  login: false,
-  password: false,
-})
-
+// Внутреннее состояние вместо маршрутизации
+const isSignUp = ref(false)
+const formData = ref({ name: '', login: '', password: '' })
+const errors = ref({ name: false, login: false, password: false })
 const error = ref('')
+const submitted = ref(false)
+const isLoading = ref(false)
+const isSuccess = ref(false)
 
-// Вычисляемое свойство для проверки валидности формы
-const isFormInvalid = computed(() => {
-  return !validateForm()
+const buttonText = computed(() => {
+  if (isSuccess.value) return isSignUp.value ? 'Успешная регистрация!' : 'Успешный вход!'
+  if (isLoading.value) return isSignUp.value ? 'Регистрация...' : 'Вход...'
+  return isSignUp.value ? 'Зарегистрироваться' : 'Войти'
 })
+// Переключение режима формы
+const toggleAuthMode = () => {
+  isSignUp.value = !isSignUp.value
+  resetForm()
+}
 
+// Сброс формы
+const resetForm = () => {
+  formData.value = { name: '', login: '', password: '' }
+  errors.value = { name: false, login: false, password: false }
+  error.value = ''
+  submitted.value = false
+  isLoading.value = false
+  isSuccess.value = false
+}
+
+// Валидация (оставляем оригинальную)
 function validateForm() {
   let isValid = true
   error.value = ''
+  errors.value = { name: false, login: false, password: false }
 
-  // Сброс ошибок
-  errors.value.name = false
-  errors.value.login = false
-  errors.value.password = false
-
-  // Проверка имени (только для регистрации)
-  if (props.isSignUp && !formData.value.name.trim()) {
+  if (isSignUp.value && !formData.value.name.trim()) {
     errors.value.name = true
     isValid = false
   }
 
-  // Проверка логина
   if (!formData.value.login.trim()) {
     errors.value.login = true
     isValid = false
   }
 
-  // Проверка пароля
   if (!formData.value.password.trim()) {
     errors.value.password = true
     isValid = false
   }
 
-  // Если есть ошибки, устанавливаем сообщение
   if (!isValid) {
-    error.value = 'Пожалуйста, заполните все обязательные поля'
+    const messages = []
+    if (errors.value.name) messages.push('Заполните имя')
+    if (errors.value.login) messages.push('Введите логин')
+    if (errors.value.password) messages.push('Введите пароль')
+    error.value = messages.join(', ')
   }
 
   return isValid
 }
 
+// Обработчик отправки
 async function handleSubmit(event) {
   event.preventDefault()
+  submitted.value = true
 
-  const data = props.isSignUp
-    ? await signUp(formData.value)
-    : await signIn({
-        login: formData.value.login,
-        password: formData.value.password,
-      })
+  if (!validateForm() || isLoading.value) return
 
-  auth.setUserInfo(data)
-  router.push('/')
-}
-// Добавляем watch с проверкой на существование
-if (userInfo) {
-  watch(
-    userInfo,
-    (newVal) => {
-      console.log('Пользователь изменился:', newVal)
-    },
-    { immediate: true },
-  )
+  isLoading.value = true
+  error.value = ''
+
+  try {
+    const data = isSignUp.value ? await signUp(formData.value) : await signIn(formData.value)
+
+    if (data.error) throw new Error(data.message || 'Ошибка сервера')
+
+    auth.setUserInfo(data)
+    isSuccess.value = true
+
+    // Автопереход после успешной регистрации
+    if (isSignUp.value) {
+      setTimeout(() => toggleAuthMode(), 2000)
+    } else {
+      setTimeout(() => (window.location.href = '/'), 2000)
+    }
+  } catch (err) {
+    error.value =
+      !isSignUp.value && err.response?.status === 401
+        ? 'Неверный логин или пароль'
+        : err.message || 'Ошибка при выполнении запроса'
+
+    errors.value.login = true
+    errors.value.password = true
+  } finally {
+    isLoading.value = false
+    isSuccess.value = false
+  }
 }
 </script>
 
@@ -333,11 +355,59 @@ a {
 }
 .error {
   border: 1px solid red;
+  transition: border-color 0.3s ease;
+  animation: shake 0.5s ease;
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
 }
 
 .error-message {
   color: red;
   margin-top: 5px;
+}
+.button-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  opacity: 0.8;
+  cursor: progress;
+}
+
+.success {
+  background-color: #4caf50 !important;
+  animation: success-blink 0.5s 2;
 }
 
 .BaseInput {
