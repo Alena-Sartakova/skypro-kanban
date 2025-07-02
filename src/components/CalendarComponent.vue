@@ -1,5 +1,5 @@
 <template>
-  <div class="pop-new-card__calendar calendar">
+  <div class="pop-new-card__calendar calendar" :class="{ 'calendar--readonly': readonly }">
     <p class="calendar__ttl subttl">Даты</p>
     <div class="calendar__block">
       <div class="calendar__nav">
@@ -44,10 +44,15 @@
 
       <div class="calendar__period">
         <p class="calendar__p date-end">
-          {{ selectedDate ? 'Срок исполнения:' : 'Выберите срок исполнения' }}
-          <span v-if="selectedDate" class="date-control">
-            {{ selectedDateFormatted }}
-          </span>
+          <template v-if="selectedDate">
+            Срок исполнения:
+            <span class="date-control">
+              {{ selectedDateFormatted }}
+            </span>
+          </template>
+          <template v-else>
+            {{ readonly ? 'Срок не установлен' : 'Выберите срок исполнения' }}
+          </template>
         </p>
       </div>
     </div>
@@ -56,14 +61,38 @@
 
 <script setup>
 import dayjs from 'dayjs'
-import { computed, ref  } from 'vue'
+import 'dayjs/locale/ru'
+import { computed, ref, watch } from 'vue'
 
 dayjs.locale('ru')
+
+const props = defineProps({
+  rawDate: String,
+  initialDate: String,
+  readonly: Boolean
+})
+
+const emit = defineEmits(['date-selected'])
+
+// Состояния
 const currentMonth = ref(dayjs())
 const selectedDate = ref(null)
 
-const dayNames = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']
+// Инициализация даты
+const initDate = () => {
+  if (props.rawDate && dayjs(props.rawDate).isValid()) {
+    const date = dayjs(props.rawDate)
+    selectedDate.value = date
+    currentMonth.value = date.startOf('month')
+  } else {
+    selectedDate.value = props.initialDate ? dayjs(props.initialDate) : null
+    currentMonth.value = (props.initialDate ? dayjs(props.initialDate) : dayjs()).startOf('month')
+  }
+}
 
+watch(() => props.rawDate, initDate, { immediate: true })
+
+// Генерация дней календаря
 const calendarDays = computed(() => {
   const start = currentMonth.value.startOf('month').startOf('week')
   const end = currentMonth.value.endOf('month').endOf('week')
@@ -74,7 +103,6 @@ const calendarDays = computed(() => {
     days.push({
       date: day,
       isCurrentMonth: day.month() === currentMonth.value.month(),
-      isToday: day.isSame(dayjs(), 'day'),
       isWeekend: day.day() === 6 || day.day() === 0,
     })
     day = day.add(1, 'day')
@@ -83,122 +111,140 @@ const calendarDays = computed(() => {
   return days
 })
 
-const getCellClasses = (day) => ({
-  '_other-month': !day.isCurrentMonth,
-  '_cell-day': day.isCurrentMonth,
-  _current: day.isToday,
-  _selected: selectedDate.value && day.date.isSame(selectedDate.value, 'day'),
-})
+const dayNames = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']
 
-const currentMonthFormatted = computed(() => currentMonth.value.format('MMMM YYYY'))
+// Форматирование месяца
+const currentMonthFormatted = computed(() =>
+  currentMonth.value.format('MMMM YYYY').replace(/^./, m => m.toUpperCase())
+)
 
+// Навигация
 const prevMonth = () => {
+  if (props.readonly) return
   currentMonth.value = currentMonth.value.subtract(1, 'month')
 }
 
 const nextMonth = () => {
+  if (props.readonly) return
   currentMonth.value = currentMonth.value.add(1, 'month')
 }
-// Форматирование даты
-const selectedDateFormatted = computed(() =>
-  selectedDate.value ? selectedDate.value.format('DD.MM.YYYY') : '',
-)
 
-// При выборе даты
+// Классы ячеек
+const getCellClasses = (day) => ({
+  '_other-month': !day.isCurrentMonth,
+  '_cell-day': day.isCurrentMonth,
+  '_selected': selectedDate.value?.isSame(day.date, 'day'),
+  '_weekend-day': day.isWeekend
+})
+
+// Форматирование выбранной даты
+const selectedDateFormatted = computed(() => {
+  return selectedDate.value?.format('D MMMM YYYY') || ''
+})
+
+// Выбор даты
 const selectDate = (day) => {
-  // Обновляем внутреннее состояние
+  if (props.readonly) return
+
+  if (!day.isCurrentMonth) {
+    currentMonth.value = day.date.startOf('month')
+  }
   selectedDate.value = day.date
-  // Отправляем событие родителю
-  emit('date-selected', day.date)
+  emit('date-selected', selectedDate.value.toDate())
 }
 
-const emit = defineEmits(['date-selected'])
+// Следим за изменениями выбранной даты
+watch(selectedDate, (newVal) => {
+  if (newVal && newVal.month() !== currentMonth.value.month()) {
+    currentMonth.value = newVal.startOf('month')
+  }
+})
 </script>
 
 <style lang="scss" scoped>
-// Календарь
-
 .calendar__cells {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
 }
 
 .calendar__cell {
+  padding: 8px;
   text-align: center;
   cursor: pointer;
-
   transition: all 0.2s ease;
+  border-radius: 4px;
+
+  &._selected {
+    background-color: #e3f2fd;
+    font-weight: 600;
+  }
+
+  &._other-month {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  &._weekend-day {
+    color: #ef5350;
+  }
 }
 
-._other-month {
-  opacity: 0.5;
-}
-
-._current {
-  background: #fff3e0;
-  font-weight: bold;
-}
-
-.date-control {
-  font-weight: 600;
-  margin-left: 5px;
-}
 .calendar--readonly {
-  opacity: 0.7;
-  pointer-events: none;
+  .calendar__cell {
+    pointer-events: none;
+    cursor: default;
+
+    &._selected {
+      background-color: transparent;
+      text-decoration: underline;
+    }
+  }
+
+  .nav__action {
+    visibility: hidden;
+  }
 }
 
-.nav__action._disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.date-end {
+  color: #666;
+  margin-top: 1rem;
+  font-size: 0.9em;
+
+  .date-control {
+    color: #000;
+    font-weight: 500;
+  }
 }
 
-.calendar__cell {
+.nav__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.nav__action {
   cursor: pointer;
+  padding: 4px;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+  }
 }
 
-.calendar--readonly .calendar__cell {
-  cursor: default;
+.calendar__month {
+  font-weight: 500;
+  margin-right: 15px;
 }
 
 @media (max-width: 768px) {
   .calendar__cell {
-    padding: 8px;
-    font-size: 13px;
-  }
-
-  .calendar__days-names {
-    display: none;
+    padding: 6px;
+    font-size: 14px;
   }
 
   .calendar__month {
-    font-size: 16px;
+    font-size: 15px;
   }
-
-  .nav__action svg {
-    width: 16px;
-    height: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .calendar__cell {
-    padding: 4px;
-    font-size: 12px;
-    min-width: 24px;
-  }
-
-  .calendar__nav {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .calendar__period {
-    font-size: 14px;
-  }
-}
-._selected {
-  color: #000000;
-  font-weight: bold;
 }
 </style>

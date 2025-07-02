@@ -3,90 +3,98 @@
     <div class="wrapper">
       <RouterView />
       <BaseHeader />
+      <Transition name="slide-fade">
+        <div v-if="isOffline" class="network-error">
+          🔴 Нет подключения к интернету. Проверьте сеть и попробуйте снова.
+          <button @click="retryFetch">Повторить попытку</button>
+        </div>
+      </Transition>
 
       <Transition name="show">
         <div class="loading" v-if="loading">Loading&#8230;</div>
-
-        <div v-else-if="error" class="error-block">
-          <div class="error-content">
-            <h3 class="error-title">{{ errorTitle }}</h3>
-            <p class="error-description">{{ errorDescription }}</p>
-            <button
-              v-if="showRetry"
-              class="retry-button"
-              @click="retryFetch"
-            >
-              Повторить попытку
-            </button>
-          </div>
-        </div>
-
-        <TaskDesk v-else :loading="loading" :tasks="tasks" :error="error" />
+        <TaskDesk v-else :loading="loading" :tasks="tasks" :error="error" @retry="getTasks" />
       </Transition>
     </div>
   </main>
 </template>
+
 <script setup>
 import BaseHeader from '@/components/BaseHeader.vue'
 import TaskDesk from '@/components/TaskDesk.vue'
 import { fetchTasks } from '@/servises/api'
-import { computed, inject, provide, ref, watch } from 'vue'
+import { inject, onMounted, onUnmounted, provide, ref, watch } from 'vue'
 
 const tasks = ref([])
 const loading = ref(false)
 const error = ref('')
+const isOffline = ref(false)
 const { userInfo } = inject('auth')
 
-// Определение типа ошибки
-const errorType = computed(() => {
-  if (!navigator.onLine) return 'offline'
-  if (error.value?.includes('401')) return 'auth'
-  return 'server'
+// Добавляем обработчики сетевого статуса
+const updateNetworkStatus = () => {
+  isOffline.value = !navigator.onLine
+  if (!isOffline.value && error.value.includes('интернет')) {
+    error.value = ''
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('online', updateNetworkStatus)
+  window.addEventListener('offline', updateNetworkStatus)
+  updateNetworkStatus()
 })
 
-// Сообщения для разных типов ошибок
-const errorTitle = computed(() => {
-  return {
-    offline: 'Отсутствует интернет-соединение',
-    auth: 'Ошибка авторизации',
-    server: 'Ошибка сервера'
-  }[errorType.value]
+onUnmounted(() => {
+  window.removeEventListener('online', updateNetworkStatus)
+  window.removeEventListener('offline', updateNetworkStatus)
 })
 
-const errorDescription = computed(() => {
-  return {
-    offline: 'Проверьте подключение к интернету и попробуйте снова',
-    auth: 'Требуется повторная авторизация',
-    server: 'Сервер временно недоступен, попробуйте позже'
-  }[errorType.value]
-})
-
-const showRetry = computed(() => errorType.value !== 'auth')
-
-provide('tasksData', { tasks, loading, error })
+provide('tasksData', { tasks, loading, error, isOffline })
 
 const getTasks = async () => {
   if (!userInfo.value?.token) {
     error.value = 'Отсутствует токен авторизации'
     return
   }
+
+  if (isOffline.value) {
+    error.value = 'Ошибка: устройство не подключено к интернету'
+    return
+  }
+
   try {
-        // Проверка интернета перед запросом
-    if (!navigator.onLine) {
-      throw new Error('offline')
-    }
     loading.value = true
-    error.value = null
+    error.value = ''
+
     const data = await fetchTasks({
       token: userInfo.value.token,
     })
+
     if (data) tasks.value = data
   } catch (err) {
-    error.value = err.message || String(err)
-    console.error('Ошибка при получении задач:', error)
+    handleFetchError(err)
   } finally {
     loading.value = false
   }
+}
+
+const handleFetchError = (err) => {
+  if (err.name === 'OfflineError' || !navigator.onLine) {
+    error.value = 'Нет подключения к интернету. Проверьте сеть.'
+    isOffline.value = true
+  } else if (err.response?.status === 401) {
+    error.value = 'Сессия истекла. Требуется повторная авторизация.'
+  } else {
+    error.value = err.message || 'Ошибка при загрузке задач'
+  }
+
+  console.error('Ошибка при получении задач:', err)
+}
+
+const retryFetch = () => {
+  isOffline.value = false
+  error.value = ''
+  getTasks()
 }
 
 watch(userInfo, getTasks, { immediate: true })

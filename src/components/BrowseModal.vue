@@ -74,7 +74,12 @@
 
             <!-- Даты -->
             <div v-if="task">
-              <CalendarComponent  :readonly="!isEditing" />
+              <CalendarComponent
+                :raw-date="task.date"
+                :initial-date="isEditing ? null : task.date"
+                :readonly="!isEditing"
+                @date-selected="handleDateSelect"
+              />
             </div>
           </div>
         </div>
@@ -92,10 +97,7 @@
                 @click="saveChanges"
                 :disabled="!isFormValid || isSubmitting"
               >
-                <template v-if="isSubmitting">
-                  <span class="loader-small"></span> Сохранение...
-                </template>
-                <template v-else>Сохранить</template>
+                {{ isSubmitting ? 'Сохранение...' : 'Сохранить' }}
               </button>
               <button class="btn-cancel _btn-bg _hover01" @click="cancelEditing">Отменить</button>
             </div>
@@ -122,49 +124,204 @@
 </template>
 
 <script setup>
-import { computed, inject, ref } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { deleteTask, editTask, fetchTasks } from '../servises/api'
+import { deleteTask, editTask } from '../servises/api'
 import router from '../router'
 import CalendarComponent from './CalendarComponent.vue'
-
+import dayjs from 'dayjs'
 
 const route = useRoute()
 const { tasks } = inject('tasksData')
 const { userInfo } = inject('auth')
 
+// Состояния компонента
 const isSubmitting = ref(false)
 const isModalOpen = ref(true)
 const isEditing = ref(false)
-
+const isDeleting = ref(false)
+const isFormValid = ref(false)
+const formError = ref('')
 const originalTask = ref({})
 const editedTask = ref({
   title: '',
   description: '',
   status: '',
   topic: '',
+  date: null,
 })
-const isDeleting = ref(false)
 const errorMessage = ref('')
 
-const closeModal = () => {
-  isModalOpen.value = false
-  router.push('/')
-}
-
-// Находим текущую задачу по ID из URL
+// Загрузка задачи при монтировании
 const task = computed(() => {
-  const foundTask = tasks.value.find((task) => task._id === route.params.id) || {
+  const foundTask = tasks.value.find((t) => t._id === route.params.id) || {
     title: '',
     description: '',
     status: '',
     topic: '',
     date: new Date().toISOString(),
   }
-  /*  console.log('Загруженная задача:', foundTask) */
   return foundTask
 })
 
+// Начало редактирования с проверкой данных
+const startEditing = () => {
+  if (!task.value?._id) {
+    errorMessage.value = 'Задача не найдена'
+    return
+  }
+
+  originalTask.value = { ...task.value }
+  editedTask.value = {
+    ...task.value,
+    date: task.value.date ? dayjs(task.value.date).toDate() : null,
+  }
+  isEditing.value = true
+}
+
+// Валидация формы
+const validateForm = () => {
+  formError.value = ''
+  const errors = []
+
+  if (!editedTask.value.title?.trim() || editedTask.value.title.trim().length < 3) {
+    errors.push('Название задачи (минимум 3 символа)')
+  }
+
+  if (!editedTask.value.status) {
+    errors.push('Статус задачи')
+  }
+
+  if (!editedTask.value.date) {
+    errors.push('Срок исполнения')
+  } else if (dayjs(editedTask.value.date).isBefore(dayjs(), 'day')) {
+    errors.push('Дата не может быть в прошлом')
+  }
+
+  isFormValid.value = errors.length === 0 // Обновляем состояние валидности
+
+  if (errors.length) {
+    formError.value = `Заполните: ${errors.join(', ')}`
+    return false
+  }
+  return true
+}
+
+// Сохранение изменений с обработкой ошибок
+const saveChanges = async () => {
+  console.log('Отправляемые данные:', {
+  title: editedTask.value.title,
+  status: editedTask.value.status,
+  date: dayjs(editedTask.value.date).toISOString(),
+  description: editedTask.value.description,
+  topic: editedTask.value.topic
+});
+  console.group('%cSave Changes Workflow', 'color: #FF9800')
+  try {
+    console.log('%c1. Валидация формы', 'color: #9C27B0')
+    if (!validateForm()) {
+      console.warn('%cВалидация провалена', 'color: #F44336', formError.value)
+      return
+    }
+    console.log('%c✓ Валидация успешна', 'color: #4CAF50')
+
+    console.log('%c2. Подготовка данных', 'color: #3F51B5', {
+      originalData: originalTask.value,
+      editedData: editedTask.value
+    })
+
+    isSubmitting.value = true
+    errorMessage.value = ''
+
+    console.log('%c3. Отправка запроса', 'color: #009688')
+    const response = await editTask({
+      token: userInfo.value.token,
+      id: editedTask.value._id || route.params.id,
+      task: {
+        ...editedTask.value,
+        date: dayjs(editedTask.value.date).toISOString()
+      }
+    }).catch(error => {
+      console.error('%c3a. Ошибка запроса', 'color: #F44336', error)
+      throw error
+    })
+
+    console.log('%c4. Обработка ответа', 'color: #FF5722', response)
+
+    if (!response?._id) {
+      console.error('%c4a. Некорректный ответ', 'color: #F44336', response)
+      throw new Error('Invalid server response format')
+    }
+
+    console.log('%c5. Обновление локальных данных', 'color: #795548')
+    const taskIndex = tasks.value.findIndex(t => t._id === response._id)
+
+    if (taskIndex === -1) {
+      console.warn('%c5a. Новая задача', 'color: #FF9800')
+      tasks.value.push(response)
+    } else {
+      console.log('%c5b. Обновление существующей', 'color: #4CAF50')
+      tasks.value.splice(taskIndex, 1, response)
+    }
+
+    console.log('%c6. Валидация реактивности', 'color: #E91E63', {
+      tasks: tasks.value.length,
+      updatedTask: tasks.value[taskIndex]
+    })
+
+    closeModal()
+  } catch (error) {
+    console.error('%c7. Обработка ошибки', 'color: #F44336', error)
+    errorMessage.value = error.message
+  } finally {
+    console.log('%c8. Финализация процесса', 'color: #9E9E9E')
+    isSubmitting.value = false
+    console.groupEnd()
+  }
+}
+
+// Закрытие модального окна
+const closeModal = () => {
+  isModalOpen.value = false
+  router.push('/')
+}
+
+// Отмена изменений
+const cancelEditing = () => {
+  Object.assign(editedTask.value, originalTask.value)
+  isEditing.value = false
+}
+
+// Удаление задачи
+const handleDelete = async () => {
+  try {
+    if (!confirm('Вы точно хотите удалить задачу?')) return
+
+    isDeleting.value = true // Блокируем кнопку
+    errorMessage.value = ''
+
+    await deleteTask({
+      token: userInfo.value.token,
+      id: route.params.id,
+    })
+
+    const taskIndex = tasks.value.findIndex((t) => t._id === route.params.id)
+    if (taskIndex !== -1) {
+      tasks.value.splice(taskIndex, 1)
+    }
+
+    closeModal()
+  } catch (error) {
+    errorMessage.value = error.response?.data?.error || error.message || 'Ошибка удаления'
+    if (error.response?.status === 401) {
+      router.push('/login')
+    }
+  } finally {
+    isDeleting.value = false // Разблокируем кнопку
+  }
+}
+
+// Вычисляемые свойства для стилей
 const topicClass = computed(() => {
   return TopicColor(task.value.topic)
 })
@@ -184,108 +341,28 @@ function TopicColor(topic) {
 // Статусы
 const statusOptions = ['Без статуса', 'Нужно сделать', 'В работе', 'Тестирование', 'Готово']
 
-// Определяем класс для каждого статуса
+// Классы для статусов
 function statusClass(status) {
   return task.value.status === status ? '_gray' : '_hide'
 }
 
-// Определяем класс текста для каждого статуса
 function statusTextClass(status) {
   return task.value.status === status ? '_gray' : ''
 }
 
-// Начало редактирования
-const startEditing = () => {
-  console.log(task.value)
-  originalTask.value = { ...task.value }
-  editedTask.value = {
-    _id: task.value._id,
-    title: task.value.title,
-    description: task.value.description,
-    status: task.value.status,
-    topic: task.value.topic,
-  }
-  isEditing.value = true
-}
-
-// Изменение статуса
+// Обработчики изменений полей
 const handleStatusChange = (newStatus) => {
-  if (isEditing.value) {
-    editedTask.value.status = newStatus
-  }
+  editedTask.value.status = newStatus
+  formError.value = '' // Сбрасываем ошибку при выборе статуса
 }
 
-const isFormValid = computed(() => {
-  return editedTask.value.title.trim().length >= 3 && editedTask.value.status.trim() !== ''
-})
-const saveChanges = async () => {
-  try {
-    // Валидация обязательных полей
-    if (!editedTask.value.title.trim() || !editedTask.value.status) {
-      errorMessage.value = 'Заполните все поля, выберите статус и дату'
-      return
-    }
-
-    // Блокировка интерфейса
-    isSubmitting.value = true
-
-    // Отправка данных
-    await editTask({
-      token: userInfo.value.token,
-      id: route.params.id,
-      task: editedTask.value,
-    })
-
-    // Обновление списка задач через fetchTasks
-    tasks.value = await fetchTasks({ token: userInfo.value.token })
-
-    // Закрытие модалки
-    closeModal()
-  } catch (error) {
-    // Обработка ошибок
-    errorMessage.value =
-      error.response?.data?.message || error.message || 'Не удалось сохранить изменения'
-  } finally {
-    isSubmitting.value = false
-  }
+const handleDateSelect = (date) => {
+  editedTask.value.date = date
+  formError.value = '' // Сбрасываем ошибку при выборе
 }
-
-// Отмена изменений
-const cancelEditing = () => {
-  Object.assign(editedTask.value, originalTask.value)
-  isEditing.value = false
-}
-
-//Функция удаления
-
-const handleDelete = async () => {
-  try {
-    if (!confirm('Вы точно хотите удалить задачу?')) return
-
-    const currentToken = userInfo.value?.token
-    if (!currentToken) {
-      errorMessage.value = 'Требуется авторизация'
-      router.push('/login')
-      return
-    }
-
-    await deleteTask({
-      token: currentToken,
-      id: route.params.id,
-    })
-
-    // Обновляем список задач и закрываем модалку
-    tasks.value = await fetchTasks({ token: currentToken })
-    closeModal()
-  } catch (error) {
-    errorMessage.value = error.response?.data?.error || error.message
-
-    if (error.response?.status === 401) {
-      router.push('/login')
-    }
-  }
-}
-
+watch(editedTask, () => {
+  validateForm()
+}, { deep: true })
 </script>
 
 <style lang="scss" scoped>
