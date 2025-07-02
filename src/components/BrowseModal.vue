@@ -209,76 +209,36 @@ const validateForm = () => {
 
 // Сохранение изменений с обработкой ошибок
 const saveChanges = async () => {
-  console.log('Отправляемые данные:', {
-  title: editedTask.value.title,
-  status: editedTask.value.status,
-  date: dayjs(editedTask.value.date).toISOString(),
-  description: editedTask.value.description,
-  topic: editedTask.value.topic
-});
-  console.group('%cSave Changes Workflow', 'color: #FF9800')
   try {
-    console.log('%c1. Валидация формы', 'color: #9C27B0')
-    if (!validateForm()) {
-      console.warn('%cВалидация провалена', 'color: #F44336', formError.value)
-      return
-    }
-    console.log('%c✓ Валидация успешна', 'color: #4CAF50')
+    if (!validateForm()) return;
 
-    console.log('%c2. Подготовка данных', 'color: #3F51B5', {
-      originalData: originalTask.value,
-      editedData: editedTask.value
-    })
+    // Подготовка данных с учетом требований API
+    const taskData = {
+      title: editedTask.value.title.trim(),
+      status: editedTask.value.status,
+      topic: editedTask.value.topic,
+      description: editedTask.value.description,
+      date: editedTask.value.date // Будет преобразовано в ISO в editTask
+    };
 
-    isSubmitting.value = true
-    errorMessage.value = ''
-
-    console.log('%c3. Отправка запроса', 'color: #009688')
-    const response = await editTask({
+    // Отправка запроса через сервис
+    const updatedTasks = await editTask({
       token: userInfo.value.token,
-      id: editedTask.value._id || route.params.id,
-      task: {
-        ...editedTask.value,
-        date: dayjs(editedTask.value.date).toISOString()
-      }
-    }).catch(error => {
-      console.error('%c3a. Ошибка запроса', 'color: #F44336', error)
-      throw error
-    })
+      id: editedTask.value._id,
+      task: taskData
+    });
 
-    console.log('%c4. Обработка ответа', 'color: #FF5722', response)
+    // Обновление всего списка задач
+    tasks.value = updatedTasks;
 
-    if (!response?._id) {
-      console.error('%c4a. Некорректный ответ', 'color: #F44336', response)
-      throw new Error('Invalid server response format')
-    }
-
-    console.log('%c5. Обновление локальных данных', 'color: #795548')
-    const taskIndex = tasks.value.findIndex(t => t._id === response._id)
-
-    if (taskIndex === -1) {
-      console.warn('%c5a. Новая задача', 'color: #FF9800')
-      tasks.value.push(response)
-    } else {
-      console.log('%c5b. Обновление существующей', 'color: #4CAF50')
-      tasks.value.splice(taskIndex, 1, response)
-    }
-
-    console.log('%c6. Валидация реактивности', 'color: #E91E63', {
-      tasks: tasks.value.length,
-      updatedTask: tasks.value[taskIndex]
-    })
-
-    closeModal()
+    closeModal();
   } catch (error) {
-    console.error('%c7. Обработка ошибки', 'color: #F44336', error)
-    errorMessage.value = error.message
-  } finally {
-    console.log('%c8. Финализация процесса', 'color: #9E9E9E')
-    isSubmitting.value = false
-    console.groupEnd()
+    errorMessage.value = error.message;
+    if (error.message.includes('авторизации')) {
+      router.push('/login');
+    }
   }
-}
+};
 
 // Закрытие модального окна
 const closeModal = () => {
