@@ -54,7 +54,7 @@ onMounted(() => {
     const data = localStorage.getItem('userInfo')
     if (data) {
       userInfo.value = JSON.parse(data)
-      /* console.log('Загруженные данные:', userInfo.value) */
+      console.log('Загруженные данные:', userInfo.value)
     }
   } catch (e) {
     userInfo.value = null
