@@ -106,6 +106,7 @@ const formData = ref({
   dueDate: null,
 })
 const titleError = ref('')
+const descriptionError = ref('')
 const dateError = ref('')
 const isSubmitting = ref(false)
 const selectedCategory = ref(null)
@@ -124,14 +125,18 @@ const validateTitle = () => {
     formData.value.title.trim().length < 3 ? 'Название должно быть не короче 3 символов' : ''
 }
 
+// Добавлена валидация описания
 const validateDescription = () => {
   if (formData.value.description.length > 500) {
     formData.value.description = formData.value.description.slice(0, 500)
   }
+  descriptionError.value =
+    formData.value.description.trim().length === 0 ? 'Описание обязательно для заполнения' : ''
 }
 
 const isFormValid = computed(() => {
   return formData.value.title.trim().length >= 3 &&
+    formData.value.description.trim().length > 0 &&
     selectedCategory.value !== null &&
     formData.value.dueDate !== null
 })
@@ -143,20 +148,20 @@ const closeModal = () => {
 
 async function handleSubmit() {
   let originalTasks = []
-// Сбрасываем ошибки
+  // Сбрасываем ошибки
   titleError.value = ''
+  descriptionError.value = ''
   dateError.value = ''
 
   // Валидация полей
-  if (formData.value.title.trim().length < 3) {
-    titleError.value = 'Название должно быть не короче 3 символов'
+  validateTitle()
+  validateDescription()
+
+  if (titleError.value || descriptionError.value || !formData.value.dueDate) {
+    if (!formData.value.dueDate) dateError.value = 'Укажите срок выполнения задачи'
     return
   }
 
-  if (!formData.value.dueDate) {
-    dateError.value = 'Укажите срок выполнения задачи'
-    return
-  }
   try {
     if (!isFormValid.value || isSubmitting.value) return
     isSubmitting.value = true

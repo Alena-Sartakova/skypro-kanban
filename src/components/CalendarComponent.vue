@@ -69,7 +69,7 @@ dayjs.locale('ru')
 const props = defineProps({
   rawDate: String,
   initialDate: String,
-  readonly: Boolean,
+  readonly: Boolean
 })
 
 const emit = defineEmits(['date-selected'])
@@ -115,7 +115,7 @@ const dayNames = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']
 
 // Форматирование месяца
 const currentMonthFormatted = computed(() =>
-  currentMonth.value.format('MMMM YYYY').replace(/^./, (m) => m.toUpperCase()),
+  currentMonth.value.format('MMMM YYYY').replace(/^./, m => m.toUpperCase())
 )
 
 // Навигация
@@ -133,8 +133,8 @@ const nextMonth = () => {
 const getCellClasses = (day) => ({
   '_other-month': !day.isCurrentMonth,
   '_cell-day': day.isCurrentMonth,
-  _selected: selectedDate.value?.isSame(day.date, 'day'),
-  '_weekend-day': day.isWeekend,
+  '_selected': selectedDate.value?.isSame(day.date, 'day'),
+  '_weekend-day': day.isWeekend
 })
 
 // Форматирование выбранной даты
@@ -162,22 +162,9 @@ watch(selectedDate, (newVal) => {
 </script>
 
 <style lang="scss" scoped>
-.calendar__block {
-  position: relative;
-  padding-bottom: 40px;
-}
 .calendar__cells {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-}
-.calendar__period {
-  position: absolute;
-  bottom: 12px;
-  left: 0;
-  right: 0;
-  padding: 0 8px;
-  margin-top: 1.5rem; 
-  z-index: 2;
 }
 
 .calendar__cell {
@@ -209,7 +196,6 @@ watch(selectedDate, (newVal) => {
 
     &._selected {
       background-color: transparent;
-      text-decoration: underline;
     }
   }
 
@@ -219,7 +205,9 @@ watch(selectedDate, (newVal) => {
 }
 
 .date-end {
+  color: #666;
   margin-top: 1rem;
+
 
   .date-control {
     color: #000;
@@ -255,9 +243,6 @@ watch(selectedDate, (newVal) => {
 
   .calendar__month {
     font-size: 15px;
-  }
-  :root {
-    --calendar-height: 180px;
   }
 }
 </style>
