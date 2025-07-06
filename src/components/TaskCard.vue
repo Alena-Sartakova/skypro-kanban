@@ -47,7 +47,7 @@
                 </clipPath>
               </defs>
             </svg>
-            <p>{{ date }}</p>
+            <p>{{ formattedDate }}</p>
           </div>
         </div>
       </div>
@@ -56,7 +56,9 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   topic: { type: String, require: true },
   title: { type: String, require: true },
   date: { type: String, require: true },
@@ -76,6 +78,24 @@ function TopicColor(topic) {
     return '_gray'
   }
 }
+
+const formattedDate = computed(() => {
+  try {
+    if (!props.date) return 'Дата не указана';
+
+    const dateObj = new Date(props.date);
+    if (isNaN(dateObj)) throw new Error('Некорректная дата');
+
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const year = dateObj.getFullYear();
+
+    return `${day}.${month}.${year}`;
+  } catch (error) {
+    console.error('Ошибка форматирования даты:', error.message);
+    return 'Некорректная дата';
+  }
+});
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isModalOpen" class="pop-new-card__container" >
+  <div v-if="isModalOpen" class="pop-new-card__container">
     <div class="pop-new-card__block">
       <div class="pop-new-card__content">
         <h3 class="pop-new-card__ttl">Создание задачи</h3>
@@ -65,6 +65,7 @@
           type="submit"
           class="form-new__create _hover01"
           :disabled="!isFormValid || isSubmitting"
+          @click.prevent="handleSubmit"
         >
           {{ isSubmitting ? 'Создание...' : 'Создать задачу' }}
         </button>
@@ -76,19 +77,17 @@
 <script setup>
 import { ref, computed, inject } from 'vue'
 import CalendarComponent from './CalendarComponent.vue'
-
 import dayjs from 'dayjs'
 import utc from 'dayjs-plugin-utc'
 import router from '../router'
-import { fetchTasks, postTask } from '../servises/api'
+import { postTask } from '../servises/api'
 
 const isModalOpen = ref(true)
-
 dayjs.extend(utc)
 
-// Получение токена
 const { userInfo } = inject('auth')
 const { tasks } = inject('tasksData')
+
 // Обработчики событий
 const handleDateSelect = (date) => {
   formData.value.dueDate = dayjs(date)
@@ -98,11 +97,7 @@ const selectCategory = (categoryId) => {
   selectedCategory.value = categoryId
 }
 
-const token = computed(() => {
-  const t = userInfo.value?.token
-  console.log('Auth Текущий токен:', t ? '****' + t.slice(-4) : 'отсутствует')
-  return t
-})
+const token = computed(() => userInfo.value?.token)
 
 // Состояния компонента
 const formData = ref({
@@ -111,17 +106,17 @@ const formData = ref({
   dueDate: null,
 })
 const titleError = ref('')
+const descriptionError = ref('')
+const dateError = ref('')
 const isSubmitting = ref(false)
 const selectedCategory = ref(null)
 
-// Категории
 const categories = ref([
   { id: 1, name: 'Web Design', color: 'orange' },
   { id: 2, name: 'Research', color: 'green' },
   { id: 3, name: 'Copywriting', color: 'purple' },
 ])
 
-// Валидации
 const validateTitle = () => {
   if (formData.value.title.length > 50) {
     formData.value.title = formData.value.title.slice(0, 50)
@@ -130,14 +125,20 @@ const validateTitle = () => {
     formData.value.title.trim().length < 3 ? 'Название должно быть не короче 3 символов' : ''
 }
 
+// Добавлена валидация описания
 const validateDescription = () => {
   if (formData.value.description.length > 500) {
     formData.value.description = formData.value.description.slice(0, 500)
   }
+  descriptionError.value =
+    formData.value.description.trim().length === 0 ? 'Описание обязательно для заполнения' : ''
 }
 
 const isFormValid = computed(() => {
-  return formData.value.title.trim().length >= 3 && selectedCategory.value !== null
+  return formData.value.title.trim().length >= 3 &&
+    formData.value.description.trim().length > 0 &&
+    selectedCategory.value !== null &&
+    formData.value.dueDate !== null
 })
 
 const closeModal = () => {
@@ -146,21 +147,45 @@ const closeModal = () => {
 }
 
 async function handleSubmit() {
+  let originalTasks = []
+  // Сбрасываем ошибки
+  titleError.value = ''
+  descriptionError.value = ''
+  dateError.value = ''
+
+  // Валидация полей
+  validateTitle()
+  validateDescription()
+
+  if (titleError.value || descriptionError.value || !formData.value.dueDate) {
+    if (!formData.value.dueDate) dateError.value = 'Укажите срок выполнения задачи'
+    return
+  }
+
   try {
-    if (!isFormValid.value) {
-      console.warn('Форма невалидна! Прерывание отправки')
-      return
-    }
+    if (!isFormValid.value || isSubmitting.value) return
+    isSubmitting.value = true
 
-    if (!token.value) {
-      console.error('Токен авторизации отсутствует!')
-      return
-    }
+    const tempId = Date.now().toString()
 
-    // Подготовка данных
+    // Оптимистичное обновление с временным _id
+    tasks.value.push({
+      _id: tempId,
+      id: tempId,
+      title: formData.value.title.trim(),
+      topic: categories.value.find(c => c.id === selectedCategory.value)?.name || 'Без категории',
+      status: 'Без статуса',
+      description: formData.value.description.trim(),
+      date: formData.value.dueDate ? dayjs.utc(formData.value.dueDate).toISOString() : null,
+      isOptimistic: true
+    })
+
+    // Глубокое копирование через JSON
+    originalTasks = JSON.parse(JSON.stringify(tasks.value))
+
     const requestData = {
       title: formData.value.title.trim(),
-      topic: categories.value.find((c) => c.id === selectedCategory.value)?.name || 'Без категории',
+      topic: categories.value.find(c => c.id === selectedCategory.value)?.name || 'Без категории',
       status: 'Без статуса',
       description: formData.value.description.trim(),
       date: formData.value.dueDate ? dayjs.utc(formData.value.dueDate).toISOString() : null,
@@ -171,25 +196,30 @@ async function handleSubmit() {
       task: requestData,
     })
 
-    if (response?.status === 201) {
-      formData.value = { title: '', description: '', dueDate: null }
-      selectedCategory.value = null
+    if (response?.data?._id) {
+      const index = tasks.value.findIndex(t => t._id === tempId)
+      if (index !== -1) {
+        tasks.value.splice(index, 1, {
+          ...response.data,
+          isOptimistic: undefined
+        })
+      }
     }
-    const freshTasks = await fetchTasks({
-      token: token.value,
-    })
-    tasks.value = freshTasks
+
+    formData.value = { title: '', description: '', dueDate: null }
+    selectedCategory.value = null
     closeModal()
+
   } catch (error) {
-    if (error.response) {
-      console.error('HTTP Status:', error.response.status)
-      console.error('Response Data:', error.response.data)
-      console.error('Headers:', error.response.headers)
-    } else if (error.request) {
-      console.error('Request:', error.request)
+    if (originalTasks.length > 0) {
+      tasks.value = originalTasks
     }
+
+    const errorMessage = error.response?.data?.message ||
+                        error.message ||
+                        'Ошибка при создании задачи'
+    console.error('Error:', errorMessage)
   } finally {
-    console.groupEnd()
     isSubmitting.value = false
   }
 }

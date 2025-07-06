@@ -25,12 +25,20 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-function logout(e) {
-   e.preventDefault() // Блокируем стандартное действие ссылки
-   localStorage.removeItem('userInfo') // Удаляем информацию о пользователе
-   router.push('/sign-in') // Отправляем на экран входа
-}
+const logout = () => {
+  try {
+    // Удаляем все данные сессии
+    localStorage.removeItem('userInfo')
+    localStorage.removeItem('token')
+    localStorage.removeItem('sessionExpire')
+    window.location.reload()
+    router.push('/sign-in')
 
+  } catch (error) {
+    console.error('Ошибка при выходе:', error)
+    router.push('/error?code=logout_failed')
+  }
+}
 </script>
 
 <style lang="scss" scoped>

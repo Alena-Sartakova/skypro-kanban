@@ -1,4 +1,5 @@
 import axios from 'axios'
+import dayjs from 'dayjs'
 
 const API_URL = 'https://wedev-api.sky.pro/api/kanban'
 // Добавляем интерцептор для обработки 401 ошибки
@@ -31,7 +32,7 @@ export async function postTask({ token, task }) {
     const { data } = await axios.post(API_URL, task, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': '' // Явное указание Content-Type
+        'Content-Type': ''
       }
     })
     return data
@@ -46,16 +47,25 @@ export async function postTask({ token, task }) {
 
 export async function editTask({ token, id, task }) {
   try {
-    const { data } = await axios.put(`${API_URL}/${id}`, task, { // Исправлен URL
+    const payload = {
+      ...task,
+      date: dayjs(task.date).toISOString(),
+      description: task.description || ''
+    };
+
+    const { data } = await axios.put(`${API_URL}/${id}`, payload, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': ''
       }
-    })
-    return data.tasks
+    });
+
+    return data.tasks;
   } catch (error) {
-    const message = error.response?.data?.message || 'Ошибка обновления задачи'
-    throw new Error(message)
+    const message = error.response?.data?.error ||
+                   error.response?.data?.message ||
+                   'Ошибка обновления задачи';
+    throw new Error(message);
   }
 }
 
